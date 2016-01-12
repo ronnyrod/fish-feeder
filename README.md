@@ -11,7 +11,7 @@
 
 ## Serial commands ##
 
-You can send some commands to feeder to get/set some operational parameters or variables
+You can send some commands to the feeder to get/set some operational parameters or variables
 
 | command |                              parameter                              |                                     description                                    |
 |:-------:|:-------------------------------------------------------------------:|:----------------------------------------------------------------------------------:|
