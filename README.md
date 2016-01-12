@@ -1,6 +1,6 @@
 # README #
 
-## Just another automatic fish feeder based on Arduino ##
+## Yet another automatic fish feeder based on Arduino ##
 
 > **List of material:**
 >
