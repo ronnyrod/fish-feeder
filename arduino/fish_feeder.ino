@@ -175,9 +175,9 @@ void startFeedingCycle() {
   feedCycleState = FC_STARTING;
   feedCyclePosition = endPosition;
   feedCycleDelay = 0;  
-  feedCycleMaxDuration = feedTimes*(longDelay+longDelay+shortDelay * (endPosition - midPosition));
-  sendStatus(false);
+  feedCycleMaxDuration = feedTimes*(longDelay+longDelay+shortDelay * (endPosition - midPosition));  
   status = STATUS_FEEDING;
+  sendStatus(false);
 }
 /*
   Command proccesor
