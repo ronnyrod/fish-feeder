@@ -1,16 +1,37 @@
 package org.ronrod.fishfeederclient;
 
+import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends ActionBarActivity {
+import org.ronrod.fishfeederclient.bluetooth.BluetoothConnectionManager;
+import org.ronrod.fishfeederclient.comm.FishFeederEventHandler;
+
+public class MainActivity extends ActionBarActivity implements FishFeederEventHandler {
+
+    private BluetoothAdapter mBluetoothAdapter;
+    private Handler mHandler;
+
+    private BluetoothConnectionManager btConnectionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                if(msg.what == BluetoothConnectionManager.BT_PACKET_RECEIVED) {
+                    MainActivity.this.onEvent((String) msg.obj);
+                }
+            }
+        };
+
     }
 
     @Override
@@ -33,5 +54,10 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onEvent(String message) {
+        //TODO: implement
     }
 }
