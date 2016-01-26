@@ -47,6 +47,7 @@ unsigned int shortDelay = SHORT_DELAY;
 
 //Feeding cycle control variables
 unsigned int feedInterval = DEFAULT_FEED_INTERVAL;
+unsigned int nextFeedingCycle = DEFAULT_FEED_INTERVAL;
 unsigned long lastFeedTime = 0;
 int feedTimes = DEFAULT_FEED_TIMES;
 
@@ -90,6 +91,7 @@ void setup()
   if(isDataStored()) {
     //Load variables from eeprom
     loadDataFromEEPROM();
+    nextFeedingCycle = feedInterval;
   } else {
     //Default values
     feederServoPin = FEEDER_SERVO_PIN;
@@ -99,6 +101,7 @@ void setup()
     longDelay = LONG_DELAY;
     shortDelay = SHORT_DELAY;
     feedInterval = DEFAULT_FEED_INTERVAL;
+    nextFeedingCycle = DEFAULT_FEED_INTERVAL;
     lastFeedTime = 0;
     feedTimes = DEFAULT_FEED_TIMES;
     status = STATUS_STARTING;    
@@ -121,8 +124,9 @@ void loop()
       inputString = "";
       cmdReceived = false;
     }    
-    //Regular feeding cycle 
-    if((millis()-lastFeedTime)/1000>=feedInterval) {
+    //Regular feeding cycle
+    nextFeedingCycle = (millis()-lastFeedTime)/1000;
+    if(nextFeedingCycle>=feedInterval) {
       startFeedingCycle();
     }
   }
@@ -170,6 +174,7 @@ int feedCycle() {
 */
 void startFeedingCycle() {
   lastFeedTime = millis();
+  nextFeedingCycle = 0;
   feedCycleTime = 0;
   feedCycleCount = 0;
   feedCycleState = FC_STARTING;
@@ -242,11 +247,12 @@ void sendStatus(boolean isLong) {
       Serial.print(feedInterval);
       Serial.print(";");
       Serial.print(FEED_TIMES);
-      Serial.print(feedTimes);
-      Serial.print(";");  
-      Serial.print("LF");
-      Serial.println(lastFeedTime);
-      Serial.print("SRV[");
+      Serial.print(feedTimes); 
+      Serial.print(";LF");
+      Serial.print(lastFeedTime);
+      Serial.print(";NF");
+      Serial.print(nextFeedingCycle);      
+      Serial.print(";SRV[");
       Serial.print(feederServoPin);  
       Serial.print("|");
       Serial.print(startPosition);  
@@ -258,7 +264,7 @@ void sendStatus(boolean isLong) {
       Serial.print(longDelay);  
       Serial.print("|");
       Serial.print(shortDelay);  
-      Serial.println("];");
+      Serial.println("]");
   } else {
       Serial.println("");
   }

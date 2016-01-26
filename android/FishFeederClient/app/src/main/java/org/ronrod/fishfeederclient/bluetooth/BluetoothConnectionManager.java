@@ -96,7 +96,7 @@ public class BluetoothConnectionManager extends Thread {
     /* Call this from the main activity to send data to the remote device */
     public void write(String data) throws IOException {
         if(connected && data!=null) {
-            mmOutStream.write(data.getBytes());
+            mmOutStream.write(new StringBuilder().append(data).append("\n").toString().getBytes());
         }
     }
 

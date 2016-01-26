@@ -1,4 +1,21 @@
 <resources>
     <string name="app_name">FishFeederClient</string>
     <string name="action_settings">Settings</string>
+    <string name="choose_a_device">Choose a device:</string>
+    <string name="please_select">Please select</string>
+    <string name="interval">Interval (min)</string>
+    <string name="feed_each_x_minutes">Feeding cycle each %d minutes</string>
+    <string name="feed_times">Turns</string>
+    <string name="feed_turns_per_feed_cycle">%d turns per feeding cycle</string>
+    <string name="feed_now">Feed now</string>
+    <string name="waiting_bluetooth">Connecting to feeder ...</string>
+    <string name="feeding">Feeding ...</string>
+    <string name="starting">Starting ...</string>
+    <string name="next_feeding_in">Next feeding in</string>
+    <string name="in_seconds">%d seconds</string>
+    <string name="update_data">Update</string>
+    <string name="reset">Reset</string>
+    <string name="upload_data">upload</string>
+    <string name="upload">up</string>
+    <string name="in_minutes">%d minutes</string>
 </resources>
