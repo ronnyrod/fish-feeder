@@ -60,7 +60,6 @@ public class MainActivity extends ActionBarActivity implements
     Button btFeed;
     Button btChangeInterval;
     Button btChangeTimes;
-    Button btReset;
 
     DonutProgress donutProgress;
     SeekBar sbInterval;
@@ -86,9 +85,6 @@ public class MainActivity extends ActionBarActivity implements
 
         btChangeTimes = Button.class.cast(findViewById(R.id.bt_change_times));
         btChangeTimes.setOnClickListener(this);
-
-        btReset = Button.class.cast(findViewById(R.id.bt_reset));
-        btReset.setOnClickListener(this);
 
         sbInterval = (SeekBar)findViewById(R.id.sb_interval);
         sbInterval.setOnSeekBarChangeListener(this);
@@ -358,7 +354,6 @@ public class MainActivity extends ActionBarActivity implements
                     btFeed.setEnabled(true);
                     btChangeInterval.setEnabled(false);
                     btChangeTimes.setEnabled(false);
-                    btReset.setEnabled(true);
                 } else if(Constants.status.FEEDING.equals(status)) {
                     //Get progress
                     Log.d(LOGCAT, "Status is FEEDING");
@@ -370,7 +365,6 @@ public class MainActivity extends ActionBarActivity implements
                     btFeed.setEnabled(false);
                     btChangeInterval.setEnabled(false);
                     btChangeTimes.setEnabled(false);
-                    btReset.setEnabled(false);
                     mTimer.postAtTime(feedCycleProgressTask, 1000);
 
                 } else if(Constants.status.STARTING.equals(status)) {
@@ -437,8 +431,6 @@ public class MainActivity extends ActionBarActivity implements
         int id = v.getId();
         if(id == R.id.bt_feed_now) {
             forceFeed();
-        }else if(id == R.id.bt_reset) {
-            reset();
         } else if(id == R.id.bt_change_interval) {
             changeFeedInterval(feeder.getInterval());
             mTimer.postAtTime(feedCycleProgressTask, 1000);

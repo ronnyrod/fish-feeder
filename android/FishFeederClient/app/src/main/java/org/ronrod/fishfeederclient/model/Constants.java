@@ -1,7 +1,7 @@
 package org.ronrod.fishfeederclient.model;
 
 /**
- * Created by VASS on 13/01/2016.
+ * Created by ronnyrod on 13/01/2016.
  */
 public final class Constants {
     public static final class app {
