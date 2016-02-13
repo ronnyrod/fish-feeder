@@ -1,17 +1,10 @@
 package org.ronrod.fishfeederclient;
 
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,43 +13,31 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.ronrod.fishfeederclient.bluetooth.BluetoothConnectionManager;
-import org.ronrod.fishfeederclient.bluetooth.BluetoothDeviceHandler;
-import org.ronrod.fishfeederclient.comm.FishFeederEventHandler;
 import org.ronrod.fishfeederclient.model.Constants;
 import org.ronrod.fishfeederclient.model.Feeder;
+import org.ronrod.fishfeederclient.model.FeederListener;
+import org.ronrod.fishfeederclient.model.FeederManager;
 import org.ronrod.fishfeederclient.ui.DonutProgress;
 
-import java.io.IOException;
-import java.util.Set;
-
-public class MainActivity extends ActionBarActivity implements
-        BluetoothDeviceHandler,
-        FishFeederEventHandler,
-        DialogInterface.OnClickListener,
+public class MainActivity extends BluetoothConnectionActivity implements
         View.OnClickListener,
-        SeekBar.OnSeekBarChangeListener
+        SeekBar.OnSeekBarChangeListener,
+        FeederListener
 {
-    private static final int REQUEST_ENABLE_BT = 1;
-    private static final String LOGCAT = "MainActivity";
-    private BluetoothAdapter mBluetoothAdapter;
-    private Handler mHandler;
+
+    private static final int REQUEST_SERVO_SETTINGS = 2;
+
 
     private Handler mTimer;
 
-    private Runnable feedCycleProgressTask = new Runnable() {
+    private Runnable refreshStatusTask = new Runnable() {
         @Override
         public void run() {
             status();
         }
     };
 
-    private BluetoothConnectionManager btConnectionManager;
-    String deviceMAC = null;
-    String[] macList = null;
-    Feeder feeder = null;
-
-    //UI
+   //UI
     Button btFeed;
     Button btChangeInterval;
     Button btChangeTimes;
@@ -66,6 +47,8 @@ public class MainActivity extends ActionBarActivity implements
     SeekBar sbTimes;
     TextView tvInterval;
     TextView tvTimes;
+    private FeederManager feederManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,50 +76,19 @@ public class MainActivity extends ActionBarActivity implements
         sbTimes.setOnSeekBarChangeListener(this);
         tvTimes = (TextView)findViewById(R.id.tv_feed_times);
 
-        mHandler = new Handler(){
-            @Override
-            public void handleMessage(Message message) {
-                if(message.what == BluetoothConnectionManager.BT_CONNECTED) {
-                    try {
-                        Thread.currentThread().sleep(10);
-                    } catch (InterruptedException e) {
-                    }
-                    MainActivity.this.onDeviceConnected();
-                } else if (message.what == BluetoothConnectionManager.BT_CLOSING) {
-                    MainActivity.this.onDeviceClosing();
-                } else if (message.what == BluetoothConnectionManager.BT_CLOSE) {
-                    MainActivity.this.onDeviceClose();
-                } else if (message.what == BluetoothConnectionManager.BT_PACKET_RECEIVED) {
-                    MainActivity.this.onEvent((String) message.obj);
-                }
-
-            }
-        };
-
         //Timer task
         mTimer = new Handler();
 
         //Feeder
-        feeder = new Feeder();
-
-        //Load settings from file
-        loadSettings();
-
+        feederManager = new FeederManager();
+        feederManager.setListener(this);
         //Start bluetooth connection
         initBluetooth();
 
-
-
     }
 
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //Disconnect bluetooth
-        disconnectBluetooth();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,79 +106,60 @@ public class MainActivity extends ActionBarActivity implements
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            if(isConnected) {
+                Intent intent = new Intent(this,ServoSettings.class);
+                intent.putExtra(Constants.keys.STARTING_POS,feederManager.getFeeder().getServoVars().getStartPosition());
+                intent.putExtra(Constants.keys.MID_POSITION,feederManager.getFeeder().getServoVars().getMidPosition());
+                intent.putExtra(Constants.keys.END_POSITION,feederManager.getFeeder().getServoVars().getEndPosition());
+                intent.putExtra(Constants.keys.LONG_DELAY,feederManager.getFeeder().getServoVars().getLongDelay());
+                intent.putExtra(Constants.keys.SHORT_DELAY,feederManager.getFeeder().getServoVars().getShortDelay());
+                intent.putExtra(Constants.keys.SERVO_PIN,feederManager.getFeeder().getServoVars().getPin());
+                startActivityForResult(intent, REQUEST_SERVO_SETTINGS);
+            } else {
+                Toast.makeText(this,getString(R.string.feeder_not_connected),Toast.LENGTH_SHORT).show();
+
+            }
+
             return true;
+        } else if (id == R.id.action_reset) {
+            onMenuReset();
+        } else if (id == R.id.action_save) {
+            onSaveData();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_ENABLE_BT) {
-            if(resultCode == RESULT_OK) {
-                onDeviceReady();
-            } else {
-                //TODO: can not continues
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    void connectBluetooth() {
-        if(btConnectionManager != null && btConnectionManager.isConnected()) {
-            onError(BluetoothDeviceHandler.ALREADY_CONNECTED);
-        } else {
-            if(BluetoothAdapter.checkBluetoothAddress(deviceMAC)) {
-                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(deviceMAC);
-                try {
-                    btConnectionManager = new BluetoothConnectionManager(device,mBluetoothAdapter,mHandler);
-                    btConnectionManager.start();
-                } catch (IOException e) {
-                    onError(BluetoothDeviceHandler.CREATION_FAILED);
+        super.onActivityResult(requestCode, resultCode, data);
+        if( requestCode == REQUEST_SERVO_SETTINGS) {
+            if(isConnected) {
+                if(resultCode == RESULT_OK) {
+                    String currentDonutText = donutProgress.getText();
+                    donutProgress.setText(getString(R.string.uploading_servo_vars));
+                    changeStartPosition(data.getIntExtra(Constants.keys.STARTING_POS, feederManager.getFeeder().getServoVars().getStartPosition()));
+                    changeMidPosition(data.getIntExtra(Constants.keys.MID_POSITION, feederManager.getFeeder().getServoVars().getMidPosition()));
+                    changeEndPosition(data.getIntExtra(Constants.keys.END_POSITION, feederManager.getFeeder().getServoVars().getEndPosition()));
+                    changeLongDelay(data.getIntExtra(Constants.keys.LONG_DELAY, feederManager.getFeeder().getServoVars().getLongDelay()));
+                    changeShortDelay(data.getIntExtra(Constants.keys.SHORT_DELAY, feederManager.getFeeder().getServoVars().getShortDelay()));
+                    changeServoPin(data.getIntExtra(Constants.keys.SERVO_PIN, feederManager.getFeeder().getServoVars().getPin()));
+                    donutProgress.setText(currentDonutText);
+                    //Requesting status to sync data
+                    status();
                 }
-            }
-        }
-    }
-    /**
-     *
-     */
-    protected void initBluetooth() {
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {
-            onError(BluetoothDeviceHandler.COMM_NOT_AVAILABLE);
-        } else {
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             } else {
-                onDeviceReady();
+                donutProgress.setText(getString(R.string.feeder_not_connected));
             }
         }
     }
 
-    /**
-     * Releases bluetooth connection and resources
-     */
-    void disconnectBluetooth() {
-        if(btConnectionManager != null) {
-            try {
-                btConnectionManager.cancel();
-            } catch (IOException e) {
-                onError(BluetoothDeviceHandler.DISCONNECTION_FAILED);
-            }
-        }
-    }
-
-    /**
-     *
-     * @return
-     */
-    private AlertDialog createSelectDeviceDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.choose_a_device);
-        builder.setItems(macList, this);
-        return builder.create();
+    @Override
+    public void onDeviceConnected() {
+        super.onDeviceConnected();
+        status();
     }
 
     /**
@@ -244,7 +177,13 @@ public class MainActivity extends ActionBarActivity implements
     private boolean reset() {
         return send(Constants.commands.RESET_DATA);
     }
-
+    /**
+     *
+     * @return
+     */
+    private boolean save() {
+        return send(Constants.commands.SAVE_DATA);
+    }
     /**
      *
      * @return
@@ -253,6 +192,68 @@ public class MainActivity extends ActionBarActivity implements
         return send(Constants.commands.STATUS);
     }
 
+    /**
+     *
+     * @param pin
+     * @return
+     */
+    private boolean changeServoPin(int pin) {
+        return send(new StringBuilder()
+                .append(Constants.commands.CHANGE_SERVO_PIN)
+                .append(pin).toString());
+    }
+
+    /**
+     *
+     * @param position
+     * @return
+     */
+    private boolean changeStartPosition(int position) {
+        return send(new StringBuilder()
+                .append(Constants.commands.CHANGE_STARTING_POS)
+                .append(String.format("%03d", position)).toString());
+    }
+    /**
+     *
+     * @param position
+     * @return
+     */
+    private boolean changeMidPosition(int position) {
+        return send(new StringBuilder()
+                .append(Constants.commands.CHANGE_MID_POSITION)
+                .append(String.format("%03d", position)).toString());
+    }
+    /**
+     *
+     * @param position
+     * @return
+     */
+    private boolean changeEndPosition(int position) {
+        return send(new StringBuilder()
+                .append(Constants.commands.CHANGE_END_POSITION)
+                .append(String.format("%03d", position)).toString());
+    }
+
+    /**
+     *
+     * @param delay
+     * @return
+     */
+    private boolean changeLongDelay(int delay) {
+        return send(new StringBuilder()
+                .append(Constants.commands.CHANGE_LONG_DELAY)
+                .append(String.format("%05d", delay)).toString());
+    }
+    /**
+     *
+     * @param delay
+     * @return
+     */
+    private boolean changeShortDelay(int delay) {
+        return send(new StringBuilder()
+                .append(Constants.commands.CHANGE_SHORT_DELAY)
+                .append(String.format("%05d", delay)).toString());
+    }
     /**
      *
      * @param interval
@@ -282,147 +283,39 @@ public class MainActivity extends ActionBarActivity implements
         }
         return output;
     }
+
     /**
      *
-     * @param data
-     * @return
      */
-    private boolean send(final String data) {
-        boolean output = false;
-        if(btConnectionManager!=null && btConnectionManager.isConnected()) {
-            try {
-                btConnectionManager.write(data);
-                output = true;
-            } catch (IOException e) {
-                output = false;
+    private void onMenuReset() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.warning)
+        .setMessage(R.string.reset_warning_message)
+        .setPositiveButton(R.string.reset, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                reset();
             }
-        }
-        return output;
+        })
+        .setNegativeButton(R.string.cancel,null)
+        .setCancelable(true).create().show();
     }
+
+    /**
+     *
+     */
+    private void onSaveData() {
+        save();
+        status();
+    }
+    @Override
     public void onError(int code) {
         Toast.makeText(this,String.format("ERROR %d",code),Toast.LENGTH_LONG).show();
     }
-    private void loadSettings() {
-        SharedPreferences sharedPreferences = getSharedPreferences(Constants.app.SETTINGS_FILE,MODE_PRIVATE);
-        deviceMAC = sharedPreferences.getString("deviceMAC",null);
-    }
-    @Override
-    public void onEvent(String message) {
-        //TODO: implement
-        Log.d(LOGCAT,message);
-        if(message.startsWith(Constants.responses.STATUS)) {
-            Log.d(LOGCAT,"Status event received");
-            String[] strings = message.split(";");
-            if(strings != null && strings.length>1) {
-                String status = strings[0].replace(Constants.responses.STATUS,"");
-                if(Constants.status.NORMAL.equals(status)) {
-                    //Get parameters
-                    Log.d(LOGCAT, "Status is NORMAL");
-                    for(String var:strings) {
-                        if(var.startsWith(Constants.responses.FEED_INTERVAL)) {
-                            int interval = Integer.parseInt(var.replace(Constants.responses.FEED_INTERVAL, ""));
-                            feeder.setInterval(interval);
-                        } else if (var.startsWith(Constants.responses.FEED_TIMES)) {
-                            int feedTimes = Integer.parseInt(var.replace(Constants.responses.FEED_TIMES, ""));
-                            feeder.setTimes(feedTimes);
-                        } else if (var.startsWith(Constants.responses.LAST_FEED_TIME)) {
-                            int lastFeedTime = Integer.parseInt(var.replace(Constants.responses.LAST_FEED_TIME, ""));
-                            feeder.setLastFeedTime(lastFeedTime);
-                        }else if (var.startsWith(Constants.responses.NEXT_FEEDING)) {
-                            int nextFeeding = Integer.parseInt(var.replace(Constants.responses.NEXT_FEEDING, ""));
-                            feeder.setNextFeeding(nextFeeding);
-                        } else if (var.startsWith(Constants.responses.SERVO_VARS)) {
-                            String[] sServoVars = var.split("\\|");
-                            if(sServoVars!=null && sServoVars.length>=6) {
-                                feeder.getServoVars().setPin(Integer.parseInt(sServoVars[0]));
-                                feeder.getServoVars().setStartPosition(Integer.parseInt(sServoVars[1]));
-                                feeder.getServoVars().setMidPosition(Integer.parseInt(sServoVars[2]));
-                                feeder.getServoVars().setEndPosition(Integer.parseInt(sServoVars[3]));
-                                feeder.getServoVars().setLongDelay(Integer.parseInt(sServoVars[4]));
-                                feeder.getServoVars().setShortDelay(Integer.parseInt(sServoVars[5]));
-                            }
-                        } else {
-
-                        }
-                    }
-                    sbInterval.setProgress(feeder.getInterval()/60);
-                    sbTimes.setProgress(feeder.getTimes());
-                    donutProgress.setMax(feeder.getInterval());
-                    donutProgress.setProgress(feeder.getInterval() - feeder.getNextFeeding());
-                    donutProgress.setText(getString(R.string.next_feeding_in));
-                    donutProgress.setInnerBottomText(String.format(getString(R.string.in_minutes), feeder.getNextFeeding()));
-                    btFeed.setEnabled(true);
-                    btChangeInterval.setEnabled(false);
-                    btChangeTimes.setEnabled(false);
-                } else if(Constants.status.FEEDING.equals(status)) {
-                    //Get progress
-                    Log.d(LOGCAT, "Status is FEEDING");
-                    float progress = Float.parseFloat(strings[1]);
-                    donutProgress.setMax(100);
-                    donutProgress.setProgress((int) (progress * 100));
-                    donutProgress.setText(getString(R.string.feeding));
-                    donutProgress.setInnerBottomText(String.format("%d %%", donutProgress.getProgress()));
-                    btFeed.setEnabled(false);
-                    btChangeInterval.setEnabled(false);
-                    btChangeTimes.setEnabled(false);
-                    mTimer.postAtTime(feedCycleProgressTask, 1000);
-
-                } else if(Constants.status.STARTING.equals(status)) {
-                    //Inform, the feeder is starting
-                    Log.d(LOGCAT,"Status is STARTING");
-                    donutProgress.setText(getString(R.string.starting));
-                } else {
-                    //Unknown status, maybe not supported firmware version?
-                    Log.d(LOGCAT,"Status is UNKNOWN");
-                }
-            }
-        }
-    }
 
     @Override
-    public void onDeviceReady() {
-        if(deviceMAC == null) {
-            Set<BluetoothDevice> bondedDevices = mBluetoothAdapter.getBondedDevices();
-            macList = new String[bondedDevices.size()];
-            int i = 0;
-            for (BluetoothDevice dev:bondedDevices) {
-                macList[i]= new StringBuilder().append(dev.getName()).append("|").append(dev.getAddress()).toString();
-                i++;
-            }
-            createSelectDeviceDialog().show();
-
-        } else {
-            connectBluetooth();
-        }
-    }
-
-    @Override
-    public void onDeviceConnected() {
-        status();
-        //TODO: allow operations
-    }
-
-    @Override
-    public void onDeviceClosing() {
-        //TODO: implement
-    }
-
-    @Override
-    public void onDeviceClose() {
-        //TODO: implement
-    }
-
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        String[] strings = macList[which].split("\\|");
-        if(strings!=null && strings.length>=2) {
-            deviceMAC = strings[1];
-            SharedPreferences sharedPreferences = getSharedPreferences(Constants.app.SETTINGS_FILE,MODE_PRIVATE);
-            sharedPreferences.edit().putString("deviceMAC",deviceMAC).commit();
-            connectBluetooth();
-        } else {
-            onError(BluetoothDeviceHandler.MAC_NOT_DEFINED);
-        }
+    public void onPacket(String packet) {
+        feederManager.process(packet);
 
     }
 
@@ -432,11 +325,11 @@ public class MainActivity extends ActionBarActivity implements
         if(id == R.id.bt_feed_now) {
             forceFeed();
         } else if(id == R.id.bt_change_interval) {
-            changeFeedInterval(feeder.getInterval());
-            mTimer.postAtTime(feedCycleProgressTask, 1000);
+            changeFeedInterval(getResources().getInteger(R.integer.min_interval)+sbInterval.getProgress());
+            mTimer.postDelayed(refreshStatusTask, 1000);
         } else if(id == R.id.bt_change_times) {
-            changeFeedTimes(feeder.getTimes());
-            mTimer.postAtTime(feedCycleProgressTask, 1000);
+            changeFeedTimes(getResources().getInteger(R.integer.min_times)+sbTimes.getProgress());
+            mTimer.postDelayed(refreshStatusTask, 1000);
         }
     }
 
@@ -444,19 +337,17 @@ public class MainActivity extends ActionBarActivity implements
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         int id = seekBar.getId();
         if(id == R.id.sb_interval) {
-            int interval = progress==0?getResources().getInteger(R.integer.min_interval):progress;
-            if(interval != feeder.getInterval()) {
+            int interval = getResources().getInteger(R.integer.min_interval)+progress;
+            if(interval != feederManager.getFeeder().getInterval()) {
                 btChangeInterval.setEnabled(true);
             }
-            feeder.setInterval(interval);
-            tvInterval.setText(String.format(getString(R.string.feed_each_x_minutes), feeder.getInterval()));
+            tvInterval.setText(String.format(getString(R.string.feed_each_x_minutes), interval));
         } else if(id == R.id.sb_times) {
-            int times = progress==0?getResources().getInteger(R.integer.min_times):progress;
-            if(times != feeder.getTimes()) {
+            int times = getResources().getInteger(R.integer.min_times)+progress;
+            if(times != feederManager.getFeeder().getTimes()) {
                 btChangeTimes.setEnabled(true);
             }
-            feeder.setTimes(times);
-            tvTimes.setText(String.format(getString(R.string.feed_turns_per_feed_cycle), feeder.getTimes()));
+            tvTimes.setText(String.format(getString(R.string.feed_turns_per_feed_cycle), times));
         }
     }
 
@@ -468,5 +359,58 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    public void onStarting() {
+        donutProgress.setText(getString(R.string.starting));
+    }
+
+    @Override
+    public void onStatus(Feeder feeder) {
+        donutProgress.setMax(feederManager.getFeeder().getInterval());
+        donutProgress.setProgress(feederManager.getFeeder().getNextFeeding());
+        donutProgress.setText(getString(R.string.next_feeding_in));
+        int nextFeedingSeconds = (feederManager.getFeeder().getInterval() - feederManager.getFeeder().getNextFeeding());
+
+        if(nextFeedingSeconds>=60) {
+            int minutes = nextFeedingSeconds / 60;
+            int seconds = (int)(60*((float)((float)nextFeedingSeconds / 60.0)-minutes)) ;
+            if(seconds == 0) {
+                donutProgress.setInnerBottomText(String.format(getString(R.string.in_minutes),nextFeedingSeconds/60));
+            } else {
+                StringBuilder sb = new StringBuilder()
+                        .append(String.format(getString(R.string.in_minutes),minutes))
+                        .append(" ")
+                        .append(String.format(getString(R.string.in_seconds), seconds));
+                donutProgress.setInnerBottomText(sb.toString());
+            }
+
+        } else {
+            donutProgress.setInnerBottomText(String.format(getString(R.string.in_seconds),nextFeedingSeconds));
+        }
+
+        sbInterval.setProgress((feederManager.getFeeder().getInterval() - getResources().getInteger(R.integer.min_interval) * 60) / 60);
+        onProgressChanged(sbInterval, sbInterval.getProgress(), false);
+        sbTimes.setProgress(feederManager.getFeeder().getTimes() - getResources().getInteger(R.integer.min_times));
+        onProgressChanged(sbTimes, sbTimes.getProgress(), false);
+        btFeed.setEnabled(true);
+        btChangeInterval.setEnabled(false);
+        btChangeTimes.setEnabled(false);
+        mTimer.removeCallbacks(refreshStatusTask);
+        mTimer.postDelayed(refreshStatusTask, 60000);
+    }
+
+    @Override
+    public void onFeedingProgress(float progress) {
+        donutProgress.setMax(100);
+        donutProgress.setProgress((int) (progress * 100));
+        donutProgress.setText(getString(R.string.feeding));
+        donutProgress.setInnerBottomText(String.format("%d %%", donutProgress.getProgress()));
+        btFeed.setEnabled(false);
+        btChangeInterval.setEnabled(false);
+        btChangeTimes.setEnabled(false);
+        mTimer.removeCallbacks(refreshStatusTask);
+        mTimer.postDelayed(refreshStatusTask, 1000);
     }
 }

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">FishFeederClient</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Servo settings</string>
     <string name="choose_a_device">Choose a device:</string>
     <string name="please_select">Please select</string>
     <string name="interval">Interval (min)</string>
@@ -18,4 +18,20 @@
     <string name="upload_data">upload</string>
     <string name="upload">up</string>
     <string name="in_minutes">%d minutes</string>
+    <string name="title_activity_servo_settings">ServoSettings</string>
+    <string name="feeder_not_connected">Feeder is not connected</string>
+    <string name="start_position">Start position is %d degrees</string>
+    <string name="mid_position">Mid position is %d degrees</string>
+    <string name="end_position">End position is %d degrees</string>
+    <string name="long_delay">Long delay is %dms</string>
+    <string name="short_delay">Short delay is %dms</string>
+    <string name="servo_pin">Servo pin is %d</string>
+    <string name="device_not_defined">Please, select a feeder</string>
+    <string name="save_servo_settings">save</string>
+    <string name="uploading_servo_vars">Uploading servo settings ...</string>
+    <string name="action_reset">Reset feeder</string>
+    <string name="warning">Warning</string>
+    <string name="reset_warning_message">All custom data loaded will be deleted and factory values will be loaded, Are you continue?</string>
+    <string name="save_data">Save data</string>
+    <string name="cancel">Cancel</string>
 </resources>

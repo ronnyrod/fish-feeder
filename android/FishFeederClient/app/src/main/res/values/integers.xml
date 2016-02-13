@@ -4,4 +4,12 @@
     <integer name="max_times">9</integer>
     <integer name="min_interval">5</integer>
     <integer name="min_times">1</integer>
+    <integer name="max_position">180</integer>
+    <integer name="min_position">0</integer>
+    <integer name="max_long_delay">1000</integer>
+    <integer name="min_long_delay">15</integer>
+    <integer name="max_short_delay">1000</integer>
+    <integer name="min_short_delay">15</integer>
+    <integer name="max_servo_pin">1</integer>
+    <integer name="min_servo_pin">8</integer>
 </resources>

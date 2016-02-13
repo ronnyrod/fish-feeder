@@ -46,6 +46,9 @@
                     android:layout_gravity="center_vertical" />
 
                 <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:background="@drawable/mybutton"
+                    android:theme="@style/MyButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/upload"
@@ -81,9 +84,13 @@
                     android:max="@integer/max_times"
                     android:indeterminate="false"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical" />
+                    android:layout_gravity="center_vertical"
+                    android:splitTrack="false" />
 
                 <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:background="@drawable/mybutton"
+                    android:theme="@style/MyButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/upload"
@@ -99,6 +106,9 @@
             android:layout_height="match_parent">
 
             <Button
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@drawable/mybutton"
+                android:theme="@style/MyButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/feed_now"
@@ -119,7 +129,7 @@
         custom:donut_progress="70"
         custom:donut_inner_bottom_text="Loading..."
         custom:donut_inner_bottom_text_size="10dp"
-        custom:donut_inner_bottom_text_color="#214193"
+        custom:donut_inner_bottom_text_color="@color/button_background"
         android:layout_marginBottom="69dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
