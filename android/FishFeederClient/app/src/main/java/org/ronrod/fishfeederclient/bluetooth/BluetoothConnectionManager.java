@@ -22,6 +22,8 @@ public class BluetoothConnectionManager extends Thread {
     public static final int BT_CLOSING = 1;
     public static final int BT_PACKET_RECEIVED = 2;
     public static final int BT_CLOSE = 3;
+    public static final int BT_CONNECTION_ERROR = 4;
+    public static final int BT_INITIAL_CONN_ERROR = 5;
 
     private final BluetoothSocket mmSocket;
     private final BluetoothAdapter mBluetoothAdapter;
@@ -41,56 +43,62 @@ public class BluetoothConnectionManager extends Thread {
         // Cancel discovery because it will slow down the connection
         mBluetoothAdapter.cancelDiscovery();
 
-        try {
-            // Connect the device through the socket. This will block
-            // until it succeeds or throws an exception
-            mmSocket.connect();
-
-            mmInStream = mmSocket.getInputStream();
-            mmOutStream = mmSocket.getOutputStream();
-
-            connected = true;
-
-            // Keep listening to the InputStream until an exception occurs
-            byte[] buffer = new byte[1024];
-            StringBuilder sb = new StringBuilder();
-            //Connection event
-            mHandler.obtainMessage(BT_CONNECTED).sendToTarget();
-
-            while (connected) {
-
-                int nBytes = mmInStream.read(buffer);
-                if(nBytes>0) {
-                    for(int i=0;i<nBytes;i++) {
-                        sb.append((char)buffer[i]);
-                    }
-                    int lineSeparatorIndex = sb.indexOf("\r\n");
-                    if(lineSeparatorIndex>=0) {
-                        mHandler.obtainMessage(BT_PACKET_RECEIVED,sb.substring(0,lineSeparatorIndex)).sendToTarget();
-                        sb.delete(0,lineSeparatorIndex+2);
-                    }
-
-                } else {
-                    connected = false;
-                }
-            }
-
-        } catch (IOException connectException) {
-            // Unable to connect; close the socket and get out
-            Log.e(LOGCAT, "Connection has failed", connectException);
-        } finally {
-            //Closing event
-            mHandler.obtainMessage(BT_CLOSING).sendToTarget();
+        if(connect()) {
             try {
-                if(mmSocket != null) {
-                    mmSocket.close();
+
+
+                mmInStream = mmSocket.getInputStream();
+                mmOutStream = mmSocket.getOutputStream();
+
+                connected = true;
+
+                // Keep listening to the InputStream until an exception occurs
+                byte[] buffer = new byte[1024];
+                StringBuilder sb = new StringBuilder();
+                //Connection event
+                mHandler.obtainMessage(BT_CONNECTED).sendToTarget();
+
+                while (connected) {
+
+                    int nBytes = mmInStream.read(buffer);
+                    if(nBytes>0) {
+                        for(int i=0;i<nBytes;i++) {
+                            sb.append((char)buffer[i]);
+                        }
+                        int lineSeparatorIndex = sb.indexOf("\r\n");
+                        if(lineSeparatorIndex>=0) {
+                            mHandler.obtainMessage(BT_PACKET_RECEIVED,sb.substring(0,lineSeparatorIndex)).sendToTarget();
+                            sb.delete(0,lineSeparatorIndex+2);
+                        }
+
+                    } else {
+                        connected = false;
+                    }
                 }
-            } catch (IOException closeException) {
-                Log.e(LOGCAT, "Close connection", closeException);
+
+            } catch (IOException connectException) {
+                // Unable to connect; close the socket and get out
+                Log.e(LOGCAT, "Connection has failed", connectException);
+                mHandler.obtainMessage(BT_CONNECTION_ERROR).sendToTarget();
+            } finally {
+                //Closing event
+                mHandler.obtainMessage(BT_CLOSING).sendToTarget();
+                try {
+                    if(mmSocket != null) {
+                        mmSocket.close();
+                    }
+                } catch (IOException closeException) {
+                    Log.e(LOGCAT, "Close connection", closeException);
+                }
             }
+            //Closing event
+            mHandler.obtainMessage(BT_CLOSE).sendToTarget();
+        } else {
+            //Impossible get a valid connection
+            mHandler.obtainMessage(BT_INITIAL_CONN_ERROR).sendToTarget();
         }
-        //Closing event
-        mHandler.obtainMessage(BT_CLOSE).sendToTarget();
+
+
     }
 
     /* Call this from the main activity to send data to the remote device */
@@ -112,5 +120,22 @@ public class BluetoothConnectionManager extends Thread {
      */
     public boolean isConnected() {
         return this.connected;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private boolean connect() {
+        boolean output = false;
+        // Connect the device through the socket. This will block
+        // until it succeeds or throws an exception
+        try {
+            mmSocket.connect();
+            output = true;
+        } catch (IOException e) {
+            Log.e(LOGCAT, "Connection has failed", e);
+        }
+        return output;
     }
 }

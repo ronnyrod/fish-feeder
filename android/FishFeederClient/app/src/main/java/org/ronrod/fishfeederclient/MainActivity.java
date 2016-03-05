@@ -13,6 +13,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.ronrod.fishfeederclient.bluetooth.BluetoothDeviceHandler;
 import org.ronrod.fishfeederclient.model.Constants;
 import org.ronrod.fishfeederclient.model.Feeder;
 import org.ronrod.fishfeederclient.model.FeederListener;
@@ -49,32 +50,32 @@ public class MainActivity extends BluetoothConnectionActivity implements
     TextView tvTimes;
     private FeederManager feederManager;
 
+    private Handler mConnectingHandler;
+    private Runnable connectingTask = new Runnable() {
+        @Override
+        public void run() {
+            if(!isConnected) {
+                int dProgress = donutProgress.getProgress();
+                if(dProgress<donutProgress.getMax()) {
+                    dProgress+=(donutProgress.getMax()/20);
+                } else {
+                    dProgress = 0;
+                }
+                donutProgress.setProgress(dProgress);
+                mConnectingHandler.postDelayed(this,250);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_connecting);
 
         donutProgress = (DonutProgress)findViewById(R.id.dp_feeding_cycle);
         donutProgress.setProgress(0);
         donutProgress.setText(getString(R.string.waiting_bluetooth));
         donutProgress.setInnerBottomText("");
-
-        btFeed = Button.class.cast(findViewById(R.id.bt_feed_now));
-        btFeed.setOnClickListener(this);
-
-        btChangeInterval = Button.class.cast(findViewById(R.id.bt_change_interval));
-        btChangeInterval.setOnClickListener(this);
-
-        btChangeTimes = Button.class.cast(findViewById(R.id.bt_change_times));
-        btChangeTimes.setOnClickListener(this);
-
-        sbInterval = (SeekBar)findViewById(R.id.sb_interval);
-        sbInterval.setOnSeekBarChangeListener(this);
-        tvInterval = (TextView)findViewById(R.id.tv_feed_interval);
-        sbTimes = (SeekBar)findViewById(R.id.sb_times);
-        sbTimes.setOnSeekBarChangeListener(this);
-        tvTimes = (TextView)findViewById(R.id.tv_feed_times);
 
         //Timer task
         mTimer = new Handler();
@@ -82,6 +83,11 @@ public class MainActivity extends BluetoothConnectionActivity implements
         //Feeder
         feederManager = new FeederManager();
         feederManager.setListener(this);
+
+        //Show connection progress
+        mConnectingHandler = new Handler();
+        mConnectingHandler.post(connectingTask);
+
         //Start bluetooth connection
         initBluetooth();
 
@@ -99,14 +105,10 @@ public class MainActivity extends BluetoothConnectionActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            if(isConnected) {
+        if(isConnected) {
+            int id = item.getItemId();
+            //noinspection SimplifiableIfStatement
+            if (id == R.id.action_settings) {
                 Intent intent = new Intent(this,ServoSettings.class);
                 intent.putExtra(Constants.keys.STARTING_POS,feederManager.getFeeder().getServoVars().getStartPosition());
                 intent.putExtra(Constants.keys.MID_POSITION,feederManager.getFeeder().getServoVars().getMidPosition());
@@ -115,18 +117,15 @@ public class MainActivity extends BluetoothConnectionActivity implements
                 intent.putExtra(Constants.keys.SHORT_DELAY,feederManager.getFeeder().getServoVars().getShortDelay());
                 intent.putExtra(Constants.keys.SERVO_PIN,feederManager.getFeeder().getServoVars().getPin());
                 startActivityForResult(intent, REQUEST_SERVO_SETTINGS);
-            } else {
-                Toast.makeText(this,getString(R.string.feeder_not_connected),Toast.LENGTH_SHORT).show();
-
+                return true;
+            } else if (id == R.id.action_reset) {
+                onMenuReset();
+            } else if (id == R.id.action_save) {
+                onSaveData();
             }
-
-            return true;
-        } else if (id == R.id.action_reset) {
-            onMenuReset();
-        } else if (id == R.id.action_save) {
-            onSaveData();
+        } else {
+            Toast.makeText(this,getString(R.string.feeder_not_connected),Toast.LENGTH_SHORT).show();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -160,6 +159,10 @@ public class MainActivity extends BluetoothConnectionActivity implements
     public void onDeviceConnected() {
         super.onDeviceConnected();
         status();
+
+        //load connected layout
+        loadUIComponents();
+
     }
 
     /**
@@ -308,9 +311,48 @@ public class MainActivity extends BluetoothConnectionActivity implements
         save();
         status();
     }
+
+    /**
+     *
+     */
+    private void loadUIComponents() {
+        setContentView(R.layout.activity_main);
+        donutProgress = (DonutProgress)findViewById(R.id.dp_feeding_cycle);
+        donutProgress.setProgress(0);
+        donutProgress.setText(getString(R.string.waiting_bluetooth));
+        donutProgress.setInnerBottomText("");
+
+        btFeed = Button.class.cast(findViewById(R.id.bt_feed_now));
+        btFeed.setOnClickListener(this);
+
+        btChangeInterval = Button.class.cast(findViewById(R.id.bt_change_interval));
+        btChangeInterval.setOnClickListener(this);
+
+        btChangeTimes = Button.class.cast(findViewById(R.id.bt_change_times));
+        btChangeTimes.setOnClickListener(this);
+
+        sbInterval = (SeekBar)findViewById(R.id.sb_interval);
+        sbInterval.setOnSeekBarChangeListener(this);
+        tvInterval = (TextView)findViewById(R.id.tv_feed_interval);
+        sbTimes = (SeekBar)findViewById(R.id.sb_times);
+        sbTimes.setOnSeekBarChangeListener(this);
+        tvTimes = (TextView)findViewById(R.id.tv_feed_times);
+    }
+
     @Override
     public void onError(int code) {
-        Toast.makeText(this,String.format("ERROR %d",code),Toast.LENGTH_LONG).show();
+
+        if(code == BluetoothDeviceHandler.INITIAL_CONNECTION_FAILED
+                ||code == BluetoothDeviceHandler.READING_WRITING_FAILURE) {
+            isConnected = false;
+            donutProgress.setProgress(0);
+            donutProgress.setText(getString(R.string.connection_not_availble));
+            donutProgress.setInnerBottomText(getString(R.string.click_to_try_again));
+            mConnectingHandler.removeCallbacks(connectingTask);
+            donutProgress.setOnClickListener(this);
+        }  else {
+            Toast.makeText(this,String.format("ERROR %d",code),Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -330,6 +372,14 @@ public class MainActivity extends BluetoothConnectionActivity implements
         } else if(id == R.id.bt_change_times) {
             changeFeedTimes(getResources().getInteger(R.integer.min_times)+sbTimes.getProgress());
             mTimer.postDelayed(refreshStatusTask, 1000);
+        } else if(id == R.id.dp_feeding_cycle) {
+            donutProgress.setOnClickListener(null);
+            donutProgress.setText(getString(R.string.waiting_bluetooth));
+            donutProgress.setInnerBottomText("");
+            //Show connection progress
+            mConnectingHandler = new Handler();
+            mConnectingHandler.post(connectingTask);
+            initBluetooth();
         }
     }
 

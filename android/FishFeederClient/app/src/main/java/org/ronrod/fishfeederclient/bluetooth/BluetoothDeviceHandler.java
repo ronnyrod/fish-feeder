@@ -9,9 +9,10 @@ public interface BluetoothDeviceHandler {
     static final int CREATION_FAILED = -3;
     static final int MAC_NOT_DEFINED = -4;
     static final int ALREADY_CONNECTED = -5;
-    static final int WRITING_FAILURE = -6;
+    static final int READING_WRITING_FAILURE = -6;
     static final int SELECT_DEVICE_CANCELED = -7;
     static final int DEVICE_NOT_CONNECTED = -8;
+    static final int INITIAL_CONNECTION_FAILED = -9;
 
     void onDeviceReady();
     void onDeviceConnected();

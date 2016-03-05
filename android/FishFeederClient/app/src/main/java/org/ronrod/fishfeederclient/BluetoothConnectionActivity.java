@@ -3,6 +3,7 @@ package org.ronrod.fishfeederclient;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +33,7 @@ public abstract class BluetoothConnectionActivity extends ActionBarActivity
     boolean isConnected = false;
     private Handler mHandler;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +55,10 @@ public abstract class BluetoothConnectionActivity extends ActionBarActivity
                     BluetoothConnectionActivity.this.onDeviceClose();
                 } else if (message.what == BluetoothConnectionManager.BT_PACKET_RECEIVED) {
                     BluetoothConnectionActivity.this.onPacket((String) message.obj);
+                } else if(message.what == BluetoothConnectionManager.BT_INITIAL_CONN_ERROR) {
+                    BluetoothConnectionActivity.this.onError(BluetoothDeviceHandler.INITIAL_CONNECTION_FAILED);
+                } else if(message.what == BluetoothConnectionManager.BT_CONNECTION_ERROR) {
+                    BluetoothConnectionActivity.this.onError(BluetoothDeviceHandler.READING_WRITING_FAILURE);
                 }
 
             }

@@ -34,4 +34,6 @@
     <string name="reset_warning_message">All custom data loaded will be deleted and factory values will be loaded, Are you continue?</string>
     <string name="save_data">Save data</string>
     <string name="cancel">Cancel</string>
+    <string name="connection_not_availble">Connection not available</string>
+    <string name="click_to_try_again">Click here to try again</string>
 </resources>
