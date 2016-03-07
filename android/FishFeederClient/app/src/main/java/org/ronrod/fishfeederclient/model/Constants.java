@@ -21,9 +21,12 @@ public final class Constants {
         public static final String FEED = "FE";
         public static final String FEED_TIMES = "FT";
         public static final String FEED_INTERVAL = "FI";
+        public static final String FEED_AT_NIGHT = "FN";
         public static final String SAVE_DATA    = "SD";
         public static final String RESET_DATA    = "RD";
         public static final String STATUS    = "ST";
+        public static final String CHANGE_LIGHT_SENSOR_PIN = "CLSPIN";
+        public static final String CHANGE_LIGHT_THRESHOLD = "CLTHR";
         public static final String CHANGE_SERVO_PIN = "CSPIN";
         public static final String CHANGE_STARTING_POS = "CSPOS";
         public static final String CHANGE_MID_POSITION = "CMPOS";
@@ -33,12 +36,16 @@ public final class Constants {
         public static final String VERSION    = "VE";
     }
     public static final class responses {
+        public static final String VERSION = "VE";
         public static final String STATUS = "ST";
         public static final String FEED_INTERVAL = "FI";
         public static final String FEED_TIMES = "FT";
         public static final String LAST_FEED_TIME = "LF";
         public static final String SERVO_VARS = "SRV";
         public static final String NEXT_FEEDING = "NF";
+        public static final String LIGHT_SENSOR = "LSN";
+        public static final String LAST_LIGHT_VALUE = "LV";
+        public static final String FEED_AT_NIGHT = "FN";
     }
     public static final class status {
         public static final String STARTING = "0";

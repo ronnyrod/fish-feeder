@@ -6,13 +6,18 @@ package org.ronrod.fishfeederclient.model;
 public class Feeder {
     private String status;
     private int interval;
+    private boolean feedAtNight;
+    private int lastLightValue;
     private int times;
     private int lastFeedTime;
     private int nextFeeding;
+    private int version;
     private ServoVars servoVars;
+    private LightSensor lightSensor;
 
     public Feeder() {
         servoVars = new ServoVars();
+        lightSensor = new LightSensor();
     }
 
     public String getStatus() {
@@ -29,6 +34,22 @@ public class Feeder {
 
     public void setInterval(int interval) {
         this.interval = interval;
+    }
+
+    public boolean isFeedAtNight() {
+        return feedAtNight;
+    }
+
+    public void setFeedAtNight(boolean feedAtNight) {
+        this.feedAtNight = feedAtNight;
+    }
+
+    public int getLastLightValue() {
+        return lastLightValue;
+    }
+
+    public void setLastLightValue(int lastLightValue) {
+        this.lastLightValue = lastLightValue;
     }
 
     public int getTimes() {
@@ -55,11 +76,27 @@ public class Feeder {
         this.nextFeeding = nextFeeding;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     public ServoVars getServoVars() {
         return servoVars;
     }
 
     public void setServoVars(ServoVars servoVars) {
         this.servoVars = servoVars;
+    }
+
+    public LightSensor getLightSensor() {
+        return lightSensor;
+    }
+
+    public void setLightSensor(LightSensor lightSensor) {
+        this.lightSensor = lightSensor;
     }
 }

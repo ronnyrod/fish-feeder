@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">YAFF</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_settings">Configuración del servo</string>
+    <string name="cancel">Cancelar</string>
+    <string name="choose_a_device">Selecciona un dispositivo</string>
+    <string name="click_to_try_again">Clic aquí para reintentar</string>
+    <string name="connection_not_availble">Conexión no disponible</string>
+    <string name="device_not_defined">Por favor, selecciona un alimentador</string>
+    <string name="end_position">Posición final %d grados</string>
+    <string name="feed_each_x_minutes">Ciclo de alimentación cada %d minutos</string>
+    <string name="feed_now">Alimentar</string>
+    <string name="feed_times">Vueltas</string>
+    <string name="feed_turns_per_feed_cycle">%d vueltas por ciclo</string>
+    <string name="feeder_not_connected">Alimentador no conectado</string>
+    <string name="feeding">Alimentando ...</string>
+    <string name="in_minutes">%d minutos</string>
+    <string name="in_seconds">%d segundos</string>
+    <string name="interval">Intevalo (min)</string>
+    <string name="long_delay">Retardo largo %dmin</string>
+    <string name="mid_position">Posición media %d grados</string>
+    <string name="next_feeding_in">Próximo ciclo en</string>
+    <string name="please_select">Por favor selecciona</string>
+    <string name="reset">Reset</string>
+    <string name="reset_warning_message">Todos los datos cargados serán borrados y se restaurarán los valores de fabrica, ¿Estas seguro?</string>
+    <string name="save_data">Guardar datos</string>
+    <string name="save_servo_settings">Guardar</string>
+    <string name="servo_pin">Pin del servo es %d</string>
+    <string name="short_delay">Retardo corto %dms</string>
+    <string name="start_position">Posición de inicio %d grados</string>
+    <string name="starting">Iniciando ...</string>
+    <string name="title_activity_servo_settings">Configuración del servo</string>
+    <string name="update_data">Actualizar</string>
+    <string name="upload">subir</string>
+    <string name="upload_data">subir</string>
+    <string name="uploading_servo_vars">Subiendo configuración</string>
+    <string name="waiting_bluetooth">Conectando ...</string>
+    <string name="warning">Aviso</string>
+    <string name="feed_at_night">Alimentación nocturna</string>
+</resources>

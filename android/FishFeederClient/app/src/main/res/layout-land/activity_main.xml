@@ -104,7 +104,51 @@
                     android:layout_gravity="center_vertical" />
             </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cb_feed_at_night"
+                    android:checked="false"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/feed_at_night"
+                    android:id="@+id/textView2"
+                    android:layout_weight="5"
+                    android:layout_gravity="center_vertical" />
+
+                <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:background="@drawable/mybutton"
+                    android:theme="@style/MyButton"
+                    android:layout_width="41dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/upload"
+                    android:id="@+id/bt_feed_at_night"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1" />
+            </LinearLayout>
+
+        </LinearLayout>
         <RelativeLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -146,6 +190,14 @@
             android:layout_gravity="center"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/firmware_version"
+            android:id="@+id/tv_firmware_version"
+         />
+
     </RelativeLayout>
 
 </RelativeLayout>

@@ -1,10 +1,11 @@
 #include <EEPROM.h> //Arduino library
 #include <Servo.h>  //Arduino library
 
-#define FIRMWARE_VERSION 2 //Firmware version
+#define FIRMWARE_VERSION 3 //Firmware version
 
 #define STATUS_LED_PIN  13
 #define FEEDER_SERVO_PIN  9
+#define LIGHT_SENSOR_PIN  2
 
 #define START_POSITION  0
 #define MID_POSITION  70
@@ -22,6 +23,8 @@
 
 #define DEFAULT_FEED_TIMES 2
 #define DEFAULT_FEED_INTERVAL 28800 //seconds
+#define DEFAULT_LIGHT_THRESHOLD  1000 //near of max value 1023
+#define DEFAULT_FEED_ON_NIGHT  0 // 0: feeding cycle not allowed if light level if over threshold (night level)
 
 //EEPROM CONTROL
 #define  DATA_SUM			120
@@ -35,7 +38,10 @@
 #define  MEM_ADDR_LONG_DELAY            MEM_ADDR_BASE+6 // 2 bytes
 #define  MEM_ADDR_SHORT_DELAY           MEM_ADDR_BASE+8 // 2 bytes
 #define  MEM_ADDR_FEED_TIMES            MEM_ADDR_BASE+10
-#define  MEM_ADDR_FEED_INTERVAL         MEM_ADDR_BASE+11 // 2 bytes 
+#define  MEM_ADDR_FEED_INTERVAL         MEM_ADDR_BASE+11 // 2 bytes
+#define  MEM_ADDR_LIGHT_THRESHOLD       MEM_ADDR_BASE+13 // 2 bytes
+#define  MEM_ADDR_FEED_ON_NIGHT         MEM_ADDR_BASE+15 // 1 byte
+#define  MEM_ADDR_LIGHT_SENSOR_PIN      MEM_ADDR_BASE+16 // 1 byte
 
 //Servo control variables
 int feederServoPin = FEEDER_SERVO_PIN;
@@ -50,6 +56,10 @@ unsigned int feedInterval = DEFAULT_FEED_INTERVAL;
 unsigned int nextFeedingCycle = DEFAULT_FEED_INTERVAL;
 unsigned long lastFeedTime = 0;
 int feedTimes = DEFAULT_FEED_TIMES;
+//Light sensor
+int lightSensorPin = LIGHT_SENSOR_PIN;
+unsigned int lightThreshold = DEFAULT_LIGHT_THRESHOLD;
+int feedOnNight = DEFAULT_FEED_ON_NIGHT;
 
 //Feeder status
 int status = STATUS_STARTING;
@@ -65,10 +75,13 @@ String VERSION = "VE";
 String FEED = "FE";
 String FEED_INTERVAL = "FI";
 String FEED_TIMES = "FT";
+String FEED_ON_NIGHT = "FN";
 String STATUS = "ST";
 String SAVE_DATA = "SD";
 String RESET_DATA = "RD";
 String CHANGE_SERVO_PIN = "CSPIN";
+String CHANGE_LIGHT_SENSOR_PIN = "CLSPIN";
+String CHANGE_LIGHT_THRESHOLD = "CLTHR";
 String CHANGE_START_POSITION = "CSPOS";
 String CHANGE_MID_POSITION = "CMPOS";
 String CHANGE_END_POSITION = "CEPOS";
@@ -94,6 +107,7 @@ void setup()
     nextFeedingCycle = feedInterval;
   } else {
     //Default values
+    lightSensorPin = LIGHT_SENSOR_PIN;
     feederServoPin = FEEDER_SERVO_PIN;
     startPosition = START_POSITION;
     midPosition = MID_POSITION;
@@ -104,6 +118,8 @@ void setup()
     nextFeedingCycle = DEFAULT_FEED_INTERVAL;
     lastFeedTime = 0;
     feedTimes = DEFAULT_FEED_TIMES;
+    lightThreshold = DEFAULT_LIGHT_THRESHOLD;
+    feedOnNight = DEFAULT_FEED_ON_NIGHT;    
     status = STATUS_STARTING;    
   }
   feederServo.attach(feederServoPin);
@@ -127,10 +143,18 @@ void loop()
     //Regular feeding cycle
     nextFeedingCycle = (millis()-lastFeedTime)/1000;
     if(nextFeedingCycle>=feedInterval) {
-      startFeedingCycle();
+      if(feedOnNight || !isNight()) {
+        startFeedingCycle();
+      }     
     }
   }
 
+}
+/*
+Check light sensor and determinate if night or not
+*/
+boolean isNight() {
+  return (analogRead(lightSensorPin) - lightThreshold)>=0;
 }
 /*
  Non blocking feeding cycle
@@ -197,6 +221,9 @@ void processCommand() {
     } else if (inputString.startsWith(FEED_INTERVAL) && inputString.length() >= FEED.length() + 5) {
       inputString.replace(FEED_INTERVAL,"");
       feedInterval = inputString.toInt();
+    } else if (inputString.startsWith(FEED_ON_NIGHT) && inputString.length() >= FEED_ON_NIGHT.length() + 1) {
+        inputString.replace(FEED_ON_NIGHT,"");
+        feedOnNight = inputString.toInt();        
     } else if (inputString.startsWith(VERSION)) {
       Serial.print(VERSION);
       Serial.println(FIRMWARE_VERSION);
@@ -209,6 +236,12 @@ void processCommand() {
     } else if (inputString.startsWith(CHANGE_SERVO_PIN) && inputString.length() >= CHANGE_SERVO_PIN.length() + 1) {
       inputString.replace(CHANGE_SERVO_PIN,"");
       feederServoPin = inputString.toInt();
+    } else if (inputString.startsWith(CHANGE_LIGHT_SENSOR_PIN) && inputString.length() >= CHANGE_LIGHT_SENSOR_PIN.length() + 1) {
+      inputString.replace(CHANGE_LIGHT_SENSOR_PIN,"");
+      lightSensorPin = inputString.toInt();
+    } else if (inputString.startsWith(CHANGE_LIGHT_THRESHOLD) && inputString.length() >= CHANGE_LIGHT_THRESHOLD.length() + 4) {
+      inputString.replace(CHANGE_LIGHT_THRESHOLD,"");
+      lightThreshold = inputString.toInt();
     } else if (inputString.startsWith(CHANGE_START_POSITION) && inputString.length() >= CHANGE_START_POSITION.length() + 3) {
       inputString.replace(CHANGE_START_POSITION,"");
       startPosition = inputString.toInt();
@@ -243,6 +276,9 @@ void sendStatus(boolean isLong) {
   }
   if(isLong) {
       Serial.print(";");
+      Serial.print(VERSION);
+      Serial.print(FIRMWARE_VERSION);
+      Serial.print(";");
       Serial.print(FEED_INTERVAL);
       Serial.print(feedInterval);
       Serial.print(";");
@@ -251,7 +287,11 @@ void sendStatus(boolean isLong) {
       Serial.print(";LF");
       Serial.print(lastFeedTime);
       Serial.print(";NF");
-      Serial.print(nextFeedingCycle);      
+      Serial.print(nextFeedingCycle);
+      Serial.print(";FN");
+      Serial.print(feedOnNight);
+      Serial.print(";LV");
+      Serial.print(analogRead(lightSensorPin));      
       Serial.print(";SRV[");
       Serial.print(feederServoPin);  
       Serial.print("|");
@@ -264,6 +304,11 @@ void sendStatus(boolean isLong) {
       Serial.print(longDelay);  
       Serial.print("|");
       Serial.print(shortDelay);  
+      Serial.print("]");
+      Serial.print(";LSN[");
+      Serial.print(lightSensorPin);
+      Serial.print("|");
+      Serial.print(lightThreshold);
       Serial.println("]");
   } else {
       Serial.println("");
@@ -283,12 +328,18 @@ void help() {
   Serial.println("X Set feed times to new value");
   Serial.print(FEED_INTERVAL);
   Serial.println("XXXXX Set feed interval to new value");
+  Serial.print(FEED_ON_NIGHT);
+  Serial.println("X Allow feeding at night");
   Serial.print(SAVE_DATA);
   Serial.println(" Save all parameters into EEPROM");
   Serial.print(RESET_DATA);
   Serial.println(" Reset feeder to default values and delete EEPROM");
   Serial.print(STATUS);
   Serial.println(" Show feeder status (status,feed interval,feed times, last feed time, servo vars)");
+  Serial.print(CHANGE_LIGHT_SENSOR_PIN);
+  Serial.println("X Change light sensor pin");
+  Serial.print(CHANGE_LIGHT_THRESHOLD);
+  Serial.println("XXXX Change light sensor threshold");  
   Serial.print(CHANGE_SERVO_PIN);
   Serial.println("X Change servo pin");
   Serial.print(CHANGE_START_POSITION);
@@ -321,6 +372,9 @@ void loadDataFromEEPROM() {
     shortDelay = EEPROMReadInt(MEM_ADDR_SHORT_DELAY);
     feedInterval = EEPROMReadInt(MEM_ADDR_FEED_INTERVAL);
     feedTimes = EEPROM.read(MEM_ADDR_FEED_TIMES);
+    lightSensorPin = EEPROM.read(MEM_ADDR_LIGHT_SENSOR_PIN);
+    lightThreshold = EEPROMReadInt(MEM_ADDR_LIGHT_THRESHOLD);
+    feedOnNight = EEPROM.read(MEM_ADDR_FEED_ON_NIGHT);
 }
 /*
   Load data into EEPROM
@@ -336,6 +390,9 @@ void loadDataToEEPROM() {
     EEPROMWriteInt(MEM_ADDR_FEED_INTERVAL,feedInterval);
     EEPROM.write(MEM_ADDR_DT_SUM_0,DATA_SUM-10);
     EEPROM.write(MEM_ADDR_DT_SUM_1,DATA_SUM+10);
+    EEPROMWriteInt(MEM_ADDR_LIGHT_THRESHOLD,lightThreshold);
+    EEPROM.write(MEM_ADDR_LIGHT_SENSOR_PIN,lightSensorPin);
+    EEPROM.write(MEM_ADDR_FEED_ON_NIGHT,feedOnNight);  
 }
 /*
    Reset dato from EEPROM and load default values

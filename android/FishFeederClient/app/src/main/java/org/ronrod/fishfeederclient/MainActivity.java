@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,12 +43,16 @@ public class MainActivity extends BluetoothConnectionActivity implements
     Button btFeed;
     Button btChangeInterval;
     Button btChangeTimes;
+    Button btFeedAtNight;
 
     DonutProgress donutProgress;
     SeekBar sbInterval;
     SeekBar sbTimes;
     TextView tvInterval;
     TextView tvTimes;
+    CheckBox cbFeedAtNight;
+    TextView tvFirmwareVersion;
+
     private FeederManager feederManager;
 
     private Handler mConnectingHandler;
@@ -289,6 +294,19 @@ public class MainActivity extends BluetoothConnectionActivity implements
 
     /**
      *
+     * @param allowFeedAtNight
+     */
+    private boolean changeFeedAtNightFlag(boolean allowFeedAtNight) {
+        boolean output = false;
+        if(allowFeedAtNight) {
+            output = send(new StringBuilder(Constants.commands.FEED_AT_NIGHT).append("1").toString());
+        } else {
+            output = send(new StringBuilder(Constants.commands.FEED_AT_NIGHT).append("0").toString());
+        }
+        return output;
+    }
+    /**
+     *
      */
     private void onMenuReset() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -331,12 +349,17 @@ public class MainActivity extends BluetoothConnectionActivity implements
         btChangeTimes = Button.class.cast(findViewById(R.id.bt_change_times));
         btChangeTimes.setOnClickListener(this);
 
+        btFeedAtNight = Button.class.cast(findViewById(R.id.bt_feed_at_night));
+        btFeedAtNight.setOnClickListener(this);
+
         sbInterval = (SeekBar)findViewById(R.id.sb_interval);
         sbInterval.setOnSeekBarChangeListener(this);
         tvInterval = (TextView)findViewById(R.id.tv_feed_interval);
         sbTimes = (SeekBar)findViewById(R.id.sb_times);
         sbTimes.setOnSeekBarChangeListener(this);
         tvTimes = (TextView)findViewById(R.id.tv_feed_times);
+        cbFeedAtNight = (CheckBox)findViewById(R.id.cb_feed_at_night);
+        tvFirmwareVersion = (TextView)findViewById(R.id.tv_firmware_version);
     }
 
     @Override
@@ -372,6 +395,9 @@ public class MainActivity extends BluetoothConnectionActivity implements
         } else if(id == R.id.bt_change_times) {
             changeFeedTimes(getResources().getInteger(R.integer.min_times)+sbTimes.getProgress());
             mTimer.postDelayed(refreshStatusTask, 1000);
+        } else if(id == R.id.bt_feed_at_night) {
+            changeFeedAtNightFlag(cbFeedAtNight.isChecked());
+            mTimer.postDelayed(refreshStatusTask, 1000);
         } else if(id == R.id.dp_feeding_cycle) {
             donutProgress.setOnClickListener(null);
             donutProgress.setText(getString(R.string.waiting_bluetooth));
@@ -382,6 +408,8 @@ public class MainActivity extends BluetoothConnectionActivity implements
             initBluetooth();
         }
     }
+
+
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -447,6 +475,8 @@ public class MainActivity extends BluetoothConnectionActivity implements
         btFeed.setEnabled(true);
         btChangeInterval.setEnabled(false);
         btChangeTimes.setEnabled(false);
+        cbFeedAtNight.setChecked(feeder.isFeedAtNight());
+        tvFirmwareVersion.setText(String.format(getString(R.string.firmware_version),feeder.getVersion()));
         mTimer.removeCallbacks(refreshStatusTask);
         mTimer.postDelayed(refreshStatusTask, 60000);
     }

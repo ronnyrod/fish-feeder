@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FishFeederClient</string>
+    <string name="app_name">YAFF</string>
     <string name="action_settings">Servo settings</string>
     <string name="choose_a_device">Choose a device:</string>
     <string name="please_select">Please select</string>
@@ -18,7 +18,7 @@
     <string name="upload_data">upload</string>
     <string name="upload">up</string>
     <string name="in_minutes">%d minutes</string>
-    <string name="title_activity_servo_settings">ServoSettings</string>
+    <string name="title_activity_servo_settings">Servo settings</string>
     <string name="feeder_not_connected">Feeder is not connected</string>
     <string name="start_position">Start position is %d degrees</string>
     <string name="mid_position">Mid position is %d degrees</string>
@@ -36,4 +36,6 @@
     <string name="cancel">Cancel</string>
     <string name="connection_not_availble">Connection not available</string>
     <string name="click_to_try_again">Click here to try again</string>
+    <string name="feed_at_night">Allow feeding at night</string>
+    <string name="firmware_version">Firmware v%d</string>
 </resources>

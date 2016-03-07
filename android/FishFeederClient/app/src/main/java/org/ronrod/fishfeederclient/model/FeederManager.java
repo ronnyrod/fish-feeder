@@ -35,6 +35,15 @@ public class FeederManager {
                         if(var.startsWith(Constants.responses.FEED_INTERVAL)) {
                             int interval = Integer.parseInt(var.replace(Constants.responses.FEED_INTERVAL, ""));
                             feeder.setInterval(interval);
+                        }else if(var.startsWith(Constants.responses.VERSION)) {
+                            int version = Integer.parseInt(var.replace(Constants.responses.VERSION, ""));
+                            feeder.setVersion(version);
+                        } else if (var.startsWith(Constants.responses.FEED_AT_NIGHT)) {
+                            int feedAtNight = Integer.parseInt(var.replace(Constants.responses.FEED_AT_NIGHT, ""));
+                            feeder.setFeedAtNight(feedAtNight > 0);
+                        } else if (var.startsWith(Constants.responses.LAST_LIGHT_VALUE)) {
+                            int lastLightValue = Integer.parseInt(var.replace(Constants.responses.LAST_LIGHT_VALUE, ""));
+                            feeder.setLastLightValue(lastLightValue);
                         } else if (var.startsWith(Constants.responses.FEED_TIMES)) {
                             int feedTimes = Integer.parseInt(var.replace(Constants.responses.FEED_TIMES, ""));
                             feeder.setTimes(feedTimes);
@@ -53,6 +62,12 @@ public class FeederManager {
                                 feeder.getServoVars().setEndPosition(Integer.parseInt(sServoVars[3]));
                                 feeder.getServoVars().setLongDelay(Integer.parseInt(sServoVars[4]));
                                 feeder.getServoVars().setShortDelay(Integer.parseInt(sServoVars[5]));
+                            }
+                        } else if (var.startsWith(Constants.responses.LIGHT_SENSOR)) {
+                            String[] sLightSensorVars = var.replace(Constants.responses.LIGHT_SENSOR,"").replace("[","").replace("]","").split("\\|");
+                            if(sLightSensorVars!=null && sLightSensorVars.length>=2) {
+                                feeder.getLightSensor().setPin(Integer.parseInt(sLightSensorVars[0]));
+                                feeder.getLightSensor().setThreshold(Integer.parseInt(sLightSensorVars[1]));
                             }
                         } else {
 
