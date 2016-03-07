@@ -1,6 +1,6 @@
 # README #
 
-## Yet another fish feeder ##
+## YAFF - Yet Another Fish Feeder ##
 
 > **Material list:**
 >
