@@ -1,11 +1,13 @@
 # README #
 
-## Yet another automatic fish feeder based on Arduino ##
+## Yet another fish feeder ##
 
 > **Material list:**
 >
 > - Arduino board (This firmware was tested on UNO board)
 > - Servo motor (for example, SG90)
+> - Light sensor
+> - 10k resistor
 > - Small container (Just for fish food)
 > - Hot glue
 
