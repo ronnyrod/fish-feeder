@@ -20,9 +20,12 @@ You can send some commands to the feeder to get/set some operational parameters 
 |    FE   |                                 N/A                                 | Force the feeding cycle                                                             |
 |   FTX   |            X: Feed times in a cycle (default 2)                     | Set feed times to new value                                                        |
 | FIXXXXX |                XXXXX: feed interval (default 28800s)                | Set feed interval to new value                                                     |
+|   FNX   |            X: 0 disabled / 1 enabled                                | Enable/Disable feeding at night |
 |    SD   |                                 N/A                                 | Save all parameters into EEPROM                                                    |
 |    RD   |                                 N/A                                 | Reset the feeder to default values and delete EEPROM                                   |
 |    ST   |                                 N/A                                 | Show the feeder status  (status ,feed interval,feed times, last feed time, servo vars) |
+|  CLSPIN  |            X: analog pin for light sensor (default 2)              | Change light sensor pin                                                                   |
+|  CLTHR  |          XXXX: light sensor threshold (default 1023)                | Change light sensor threshold                                                                   |
 |  CSPIN  |            X: pin attached to servo (default 9)                     | Change servo pin                                                                   |
 |  CSPOS  |                 XXX: Servo start position (0 to 180)                | Change servo start position                                                        |
 |  CMPOS  | XXX: Servo mid position (0 to 180) and  greater than start position | Change servo mid position                                                          |
