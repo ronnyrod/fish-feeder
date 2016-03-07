@@ -131,10 +131,13 @@ void loop()
 {  
   if(status == STATUS_STARTING) {
     startFeedingCycle();
-  } else if (status == STATUS_FEEDING) {     
+  } else if (status == STATUS_FEEDING) {
+    //Status LED ON
+    digitalWrite(STATUS_LED_PIN,HIGH);     
     status = feedCycle();    
   } else {
-    //Normal state       
+    //Normal state - Status LED OFF
+    digitalWrite(STATUS_LED_PIN,LOW);       
     if (cmdReceived) {    
       processCommand();
       inputString = "";
@@ -143,9 +146,13 @@ void loop()
     //Regular feeding cycle
     nextFeedingCycle = (millis()-lastFeedTime)/1000;
     if(nextFeedingCycle>=feedInterval) {
-      if(feedOnNight || !isNight()) {
-        startFeedingCycle();
-      }     
+	if(isNight()) {
+            if(feedOnNight){
+                startFeedingCycle();   
+            }
+        } else {
+            startFeedingCycle();
+        }
     }
   }
 
@@ -154,7 +161,11 @@ void loop()
 Check light sensor and determinate if night or not
 */
 boolean isNight() {
-  return (analogRead(lightSensorPin) - lightThreshold)>=0;
+    if(analogRead(lightSensorPin)>=lightThreshold) {
+        return true;
+    } else {
+        return false;
+    }
 }
 /*
  Non blocking feeding cycle
