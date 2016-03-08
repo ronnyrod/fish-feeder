@@ -146,7 +146,7 @@ void loop()
     //Regular feeding cycle
     nextFeedingCycle = (millis()-lastFeedTime)/1000;
     if(nextFeedingCycle>=feedInterval) {
-	if(isNight()) {
+	if(analogRead(lightSensorPin) >= lightThreshold) {
             if(feedOnNight){
                 startFeedingCycle();   
             }
@@ -157,16 +157,7 @@ void loop()
   }
 
 }
-/*
-Check light sensor and determinate if night or not
-*/
-boolean isNight() {
-    if(analogRead(lightSensorPin)>=lightThreshold) {
-        return true;
-    } else {
-        return false;
-    }
-}
+
 /*
  Non blocking feeding cycle
 */
