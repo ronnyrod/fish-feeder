@@ -2,8 +2,6 @@ package org.ronrod.fishfeederclient.model;
 
 import android.util.Log;
 
-import org.ronrod.fishfeederclient.R;
-
 /**
  * Created by ronny on 13/02/16.
  */

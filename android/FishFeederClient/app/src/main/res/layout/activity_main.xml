@@ -109,29 +109,31 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView" />
+                android:id="@+id/textView"
+                android:text="@string/feed_at_night"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <CheckBox
+                <Switch
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/cb_feed_at_night"
+                    android:layout_height="match_parent"
+                    android:id="@+id/sw_feed_at_night"
                     android:checked="false"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_gravity="center_vertical" />
+                    android:layout_weight="1"
+                    android:showText="false"
+                    android:singleLine="false"
+                    android:splitTrack="false"
+                    android:elegantTextHeight="false"
+                    android:layout_gravity="center" />
 
-                <TextView
+                <Space
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/feed_at_night"
-                    android:id="@+id/textView2"
-                    android:layout_weight="5"
-                    android:layout_gravity="center_vertical" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="5" />
 
                 <Button
                     style="?android:attr/borderlessButtonStyle"

@@ -9,8 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +50,7 @@ public class MainActivity extends BluetoothConnectionActivity implements
     SeekBar sbTimes;
     TextView tvInterval;
     TextView tvTimes;
-    CheckBox cbFeedAtNight;
+    Switch swFeedAtNight;
     TextView tvFirmwareVersion;
 
     private FeederManager feederManager;
@@ -236,7 +236,7 @@ public class MainActivity extends BluetoothConnectionActivity implements
         sbTimes = (SeekBar)findViewById(R.id.sb_times);
         sbTimes.setOnSeekBarChangeListener(this);
         tvTimes = (TextView)findViewById(R.id.tv_feed_times);
-        cbFeedAtNight = (CheckBox)findViewById(R.id.cb_feed_at_night);
+        swFeedAtNight = (Switch)findViewById(R.id.sw_feed_at_night);
         tvFirmwareVersion = (TextView)findViewById(R.id.tv_firmware_version);
     }
 
@@ -274,7 +274,7 @@ public class MainActivity extends BluetoothConnectionActivity implements
             send(feederManager.changeFeedTimes(getResources().getInteger(R.integer.min_times) + sbTimes.getProgress()));
             mTimer.postDelayed(refreshStatusTask, 1000);
         } else if(id == R.id.bt_feed_at_night) {
-            send(feederManager.changeFeedAtNightFlag(cbFeedAtNight.isChecked()));
+            send(feederManager.changeFeedAtNightFlag(swFeedAtNight.isChecked()));
             mTimer.postDelayed(refreshStatusTask, 1000);
         } else if(id == R.id.dp_feeding_cycle) {
             donutProgress.setOnClickListener(null);
@@ -357,7 +357,7 @@ public class MainActivity extends BluetoothConnectionActivity implements
         btFeed.setEnabled(true);
         btChangeInterval.setEnabled(false);
         btChangeTimes.setEnabled(false);
-        cbFeedAtNight.setChecked(feeder.isFeedAtNight());
+        swFeedAtNight.setChecked(feeder.isFeedAtNight());
         tvFirmwareVersion.setText(String.format(getString(R.string.firmware_version),feeder.getVersion()));
         mTimer.removeCallbacks(refreshStatusTask);
         mTimer.postDelayed(refreshStatusTask, 60000);

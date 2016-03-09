@@ -3,7 +3,6 @@ package org.ronrod.fishfeederclient;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
