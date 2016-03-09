@@ -16,6 +16,8 @@ public final class Constants {
         public static final String END_POSITION = "END_POSITION";
         public static final String LONG_DELAY = "LONG_DELAY";
         public static final String SHORT_DELAY = "SHORT_DELAY";
+        public static final String NIGHT_THRESHOLD = "NIGHT_THRESHOLD";
+        public static final String LIGHT_SENSOR_PIN = "LIGHT_SENSOR_PIN";
     }
     public static final class commands {
         public static final String FEED = "FE";

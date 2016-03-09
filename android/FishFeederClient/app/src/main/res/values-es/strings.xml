@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">YAFF</string>
     <string name="action_reset">Reset</string>
-    <string name="action_settings">Configuración del servo</string>
+    <string name="action_settings">Configuración avanzada</string>
     <string name="cancel">Cancelar</string>
     <string name="choose_a_device">Selecciona un dispositivo</string>
     <string name="click_to_try_again">Clic aquí para reintentar</string>
@@ -20,7 +20,7 @@
     <string name="interval">Intevalo (min)</string>
     <string name="long_delay">Retardo largo %dmin</string>
     <string name="mid_position">Posición media %d grados</string>
-    <string name="next_feeding_in">Próximo ciclo en</string>
+    <string name="next_feeding_in">Próximo ciclo</string>
     <string name="please_select">Por favor selecciona</string>
     <string name="reset">Reset</string>
     <string name="reset_warning_message">Todos los datos cargados serán borrados y se restaurarán los valores de fabrica, ¿Estas seguro?</string>
@@ -30,7 +30,7 @@
     <string name="short_delay">Retardo corto %dms</string>
     <string name="start_position">Posición de inicio %d grados</string>
     <string name="starting">Iniciando ...</string>
-    <string name="title_activity_servo_settings">Configuración del servo</string>
+    <string name="title_activity_servo_settings">Configuración avanzada</string>
     <string name="update_data">Actualizar</string>
     <string name="upload">subir</string>
     <string name="upload_data">subir</string>
@@ -38,4 +38,10 @@
     <string name="waiting_bluetooth">Conectando ...</string>
     <string name="warning">Aviso</string>
     <string name="feed_at_night">Alimentación nocturna</string>
+    <string name="unknown"></string>
+    <string name="waiting_for_light">cuando haya luz</string>
+    <string name="servo_settings">Servo</string>
+    <string name="light_sensor_settings">Sensor de luz</string>
+    <string name="light_sensor_pin">Pin del sensor de luz es %d</string>
+    <string name="night_threshold">Límite noche es %d</string>
 </resources>

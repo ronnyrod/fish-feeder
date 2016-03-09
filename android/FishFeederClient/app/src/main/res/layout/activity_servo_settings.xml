@@ -7,212 +7,308 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="org.ronrod.fishfeederclient.ServoSettings">
+    tools:context=".AdvancedSettings">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView" >
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
+            android:layout_height="wrap_content">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/start_position"
-                android:id="@+id/tv_start_position" />
+                android:text="@string/light_sensor_settings"
+                android:id="@+id/tv_light_sensor_settings"
+                android:textAlignment="center" />
+
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                >
 
-                <SeekBar
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/sb_start_postition"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:indeterminate="false"
-                    android:max="@integer/max_position" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/night_threshold"
+                    android:id="@+id/tv_night_threshold" />
 
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <SeekBar
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sb_night_threshold"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:indeterminate="false"
+                        android:max="@integer/max_night_threshold" />
+
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/light_sensor_pin"
+                    android:id="@+id/tv_light_sensor_pin" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <SeekBar
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sb_light_sensor_pin"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:indeterminate="false"
+                        android:max="@integer/max_light_sensor_pin" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/mid_position"
-                android:id="@+id/tv_mid_position" />
+                android:text="@string/servo_settings"
+                android:id="@+id/tv_servo_settings"
+                android:textAlignment="center" />
+
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <SeekBar
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sb_mid_postition"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:indeterminate="false"
-                    android:max="@integer/max_position" />
-
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/end_position"
-                android:id="@+id/tv_end_position" />
+                android:layout_weight="1"
+                >
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/start_position"
+                    android:id="@+id/tv_start_position" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <SeekBar
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sb_start_postition"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:indeterminate="false"
+                        android:max="@integer/max_position" />
+
+                </LinearLayout>
+            </LinearLayout>
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <SeekBar
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sb_end_postition"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:indeterminate="false"
-                    android:max="@integer/max_position" />
-
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/long_delay"
-                android:id="@+id/tv_long_delay" />
+                android:layout_weight="1"
+                >
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/mid_position"
+                    android:id="@+id/tv_mid_position" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <SeekBar
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sb_mid_postition"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:indeterminate="false"
+                        android:max="@integer/max_position" />
+
+                </LinearLayout>
+            </LinearLayout>
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <SeekBar
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sb_long_delay"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:indeterminate="false"
-                    android:max="@integer/max_long_delay" />
-
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/short_delay"
-                android:id="@+id/tv_short_delay" />
+                android:layout_weight="1"
+                >
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/end_position"
+                    android:id="@+id/tv_end_position" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <SeekBar
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sb_end_postition"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:indeterminate="false"
+                        android:max="@integer/max_position" />
+
+                </LinearLayout>
+            </LinearLayout>
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <SeekBar
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sb_short_delay"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:indeterminate="false"
-                    android:max="@integer/max_short_delay" />
-
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/servo_pin"
-                android:id="@+id/tv_servo_pin" />
+                android:layout_weight="1"
+                >
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/long_delay"
+                    android:id="@+id/tv_long_delay" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <SeekBar
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sb_long_delay"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:indeterminate="false"
+                        android:max="@integer/max_long_delay" />
+
+                </LinearLayout>
+            </LinearLayout>
             <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/short_delay"
+                    android:id="@+id/tv_short_delay" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <SeekBar
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sb_short_delay"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:indeterminate="false"
+                        android:max="@integer/max_short_delay" />
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/servo_pin"
+                    android:id="@+id/tv_servo_pin" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <SeekBar
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sb_servo_pin"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:indeterminate="false"
+                        android:max="@integer/max_servo_pin" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <SeekBar
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sb_servo_pin"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:indeterminate="false"
-                    android:max="@integer/max_servo_pin" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            >
-
-            <Button
-                style="?android:attr/borderlessButtonStyle"
-                android:background="@drawable/mybutton"
-                android:theme="@style/MyButton"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/upload"
-                android:id="@+id/bt_save_servo_settings"
-                android:layout_gravity="center"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true" />
-        </RelativeLayout>
-    </LinearLayout>
+                android:layout_weight="2"
+                >
+
+                <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:background="@drawable/mybutton"
+                    android:theme="@style/MyButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/upload"
+                    android:id="@+id/bt_save_servo_settings"
+                    android:layout_gravity="center"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

@@ -12,4 +12,8 @@
     <integer name="min_short_delay">15</integer>
     <integer name="max_servo_pin">1</integer>
     <integer name="min_servo_pin">8</integer>
+    <integer name="max_night_threshold">1023</integer>
+    <integer name="max_light_sensor_pin">3</integer>
+    <integer name="min_night_threshold">0</integer>
+    <integer name="min_light_sensor_pin">2</integer>
 </resources>

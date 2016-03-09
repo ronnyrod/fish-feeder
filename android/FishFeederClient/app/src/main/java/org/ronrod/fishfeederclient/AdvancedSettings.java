@@ -10,9 +10,11 @@ import android.widget.TextView;
 
 import org.ronrod.fishfeederclient.model.Constants;
 
-public class ServoSettings extends ActionBarActivity  implements  SeekBar.OnSeekBarChangeListener, View.OnClickListener{
+public class AdvancedSettings extends ActionBarActivity  implements  SeekBar.OnSeekBarChangeListener, View.OnClickListener{
 
     //Seekbars
+    SeekBar sbNightThreshold;
+    SeekBar sbLightSensorPin;
     SeekBar sbStartPos;
     SeekBar sbMidPos;
     SeekBar sbEndPos;
@@ -20,13 +22,17 @@ public class ServoSettings extends ActionBarActivity  implements  SeekBar.OnSeek
     SeekBar sbShortDelay;
     SeekBar sbServoPin;
 
+
     //Text views
+    TextView tvNightThreshold;
+    TextView tvLightSensorPin;
     TextView tvStartPos;
     TextView tvMidPos;
     TextView tvEndPos;
     TextView tvLongDelay;
     TextView tvShortDelay;
     TextView tvServoPin;
+
 
     //Button
     Button btUploadSettings;
@@ -35,6 +41,8 @@ public class ServoSettings extends ActionBarActivity  implements  SeekBar.OnSeek
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_servo_settings);
 
+        sbNightThreshold =  (SeekBar)findViewById(R.id.sb_night_threshold);
+        sbLightSensorPin =  (SeekBar)findViewById(R.id.sb_light_sensor_pin);
         sbStartPos =  (SeekBar)findViewById(R.id.sb_start_postition);
         sbMidPos =  (SeekBar)findViewById(R.id.sb_mid_postition);
         sbEndPos =  (SeekBar)findViewById(R.id.sb_end_postition);
@@ -42,6 +50,8 @@ public class ServoSettings extends ActionBarActivity  implements  SeekBar.OnSeek
         sbShortDelay =  (SeekBar)findViewById(R.id.sb_short_delay);
         sbServoPin = (SeekBar)findViewById(R.id.sb_servo_pin);
 
+        tvNightThreshold = (TextView)findViewById(R.id.tv_night_threshold);
+        tvLightSensorPin = (TextView)findViewById(R.id.tv_light_sensor_pin);
         tvStartPos = (TextView)findViewById(R.id.tv_start_position);
         tvMidPos = (TextView)findViewById(R.id.tv_mid_position);
         tvEndPos = (TextView)findViewById(R.id.tv_end_position);
@@ -51,6 +61,8 @@ public class ServoSettings extends ActionBarActivity  implements  SeekBar.OnSeek
 
         btUploadSettings = (Button)findViewById(R.id.bt_save_servo_settings);
 
+        sbNightThreshold.setOnSeekBarChangeListener(this);
+        sbLightSensorPin.setOnSeekBarChangeListener(this);
         sbStartPos.setOnSeekBarChangeListener(this);
         sbMidPos.setOnSeekBarChangeListener(this);
         sbEndPos.setOnSeekBarChangeListener(this);
@@ -62,6 +74,11 @@ public class ServoSettings extends ActionBarActivity  implements  SeekBar.OnSeek
         btUploadSettings.setEnabled(false);
 
         //Initial values
+        sbNightThreshold.setProgress(getIntent().getIntExtra(Constants.keys.NIGHT_THRESHOLD, 0));
+        onProgressChanged(sbNightThreshold, sbNightThreshold.getProgress(), false);
+        sbLightSensorPin.setProgress(getIntent().getIntExtra(Constants.keys.LIGHT_SENSOR_PIN, 0));
+        onProgressChanged(sbLightSensorPin, sbLightSensorPin.getProgress(), false);
+
         sbStartPos.setProgress(getIntent().getIntExtra(Constants.keys.STARTING_POS, 0));
         onProgressChanged(sbStartPos, sbStartPos.getProgress(), false);
         sbMidPos.setProgress(getIntent().getIntExtra(Constants.keys.MID_POSITION, 0));
@@ -84,8 +101,16 @@ public class ServoSettings extends ActionBarActivity  implements  SeekBar.OnSeek
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         int id = seekBar.getId();
         switch (id) {
+            case R.id.sb_night_threshold:
+                int value = getResources().getInteger(R.integer.min_night_threshold)+progress;
+                tvNightThreshold.setText(String.format(getString(R.string.night_threshold),value));
+                break;
+            case R.id.sb_light_sensor_pin:
+                value = getResources().getInteger(R.integer.min_light_sensor_pin)+progress;
+                tvLightSensorPin.setText(String.format(getString(R.string.light_sensor_pin),value));
+                break;
             case R.id.sb_start_postition:
-                int value = getResources().getInteger(R.integer.min_position)+progress;
+                value = getResources().getInteger(R.integer.min_position)+progress;
                 tvStartPos.setText(String.format(getString(R.string.start_position),value));
                 break;
             case R.id.sb_mid_postition:
@@ -127,6 +152,8 @@ public class ServoSettings extends ActionBarActivity  implements  SeekBar.OnSeek
         int id = v.getId();
         if(id == R.id.bt_save_servo_settings) {
             Intent intent = new Intent();
+            intent.putExtra(Constants.keys.NIGHT_THRESHOLD,sbNightThreshold.getProgress());
+            intent.putExtra(Constants.keys.LIGHT_SENSOR_PIN,sbLightSensorPin.getProgress());
             intent.putExtra(Constants.keys.STARTING_POS,sbStartPos.getProgress());
             intent.putExtra(Constants.keys.MID_POSITION,sbMidPos.getProgress());
             intent.putExtra(Constants.keys.END_POSITION,sbEndPos.getProgress());

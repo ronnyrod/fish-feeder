@@ -2,6 +2,8 @@ package org.ronrod.fishfeederclient.model;
 
 import android.util.Log;
 
+import org.ronrod.fishfeederclient.R;
+
 /**
  * Created by ronny on 13/02/16.
  */
@@ -11,10 +13,22 @@ public class FeederManager {
 
     private Feeder feeder;
     private FeederListener listener;
+    private int minInterval;
+    private int maxInterval;
+    private int minFeedTimes;
+    private int maxFeedTimes;
+    private int minNightThreshold;
+    private int maxNightThreshold;
 
 
-    public FeederManager() {
+    public FeederManager(int minInterval,int maxInterval,int minFeedTimes,int maxFeedTimes,int minNightThreshold,int maxNightThreshold) {
         this.feeder = new Feeder();
+        this.minInterval = minInterval;
+        this.maxInterval = maxInterval;
+        this.minFeedTimes = minFeedTimes;
+        this.maxFeedTimes = maxFeedTimes;
+        this.minNightThreshold = minNightThreshold;
+        this.maxNightThreshold = maxNightThreshold;
     }
 
     /**
@@ -110,6 +124,168 @@ public class FeederManager {
      *
      * @return
      */
+    public String forceFeed() {
+        return Constants.commands.FEED;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String reset() {
+        return Constants.commands.RESET_DATA;
+    }
+    /**
+     *
+     * @return
+     */
+    public String save() {
+        return Constants.commands.SAVE_DATA;
+    }
+    /**
+     *
+     * @return
+     */
+    public String status() {
+        return Constants.commands.STATUS;
+    }
+
+    /**
+     *
+     * @param pin
+     * @return
+     */
+    public String changeServoPin(int pin) {
+        return new StringBuilder()
+                .append(Constants.commands.CHANGE_SERVO_PIN)
+                .append(pin).toString();
+    }
+
+    /**
+     *
+     * @param position
+     * @return
+     */
+    public String changeStartPosition(int position) {
+        return new StringBuilder()
+                .append(Constants.commands.CHANGE_STARTING_POS)
+                .append(String.format("%03d", position)).toString();
+    }
+    /**
+     *
+     * @param position
+     * @return
+     */
+    public String changeMidPosition(int position) {
+        return new StringBuilder()
+                .append(Constants.commands.CHANGE_MID_POSITION)
+                .append(String.format("%03d", position)).toString();
+    }
+    /**
+     *
+     * @param position
+     * @return
+     */
+    public String changeEndPosition(int position) {
+        return new StringBuilder()
+                .append(Constants.commands.CHANGE_END_POSITION)
+                .append(String.format("%03d", position)).toString();
+    }
+
+    /**
+     *
+     * @param delay
+     * @return
+     */
+    public String changeLongDelay(int delay) {
+        return new StringBuilder()
+                .append(Constants.commands.CHANGE_LONG_DELAY)
+                .append(String.format("%05d", delay)).toString();
+    }
+    /**
+     *
+     * @param delay
+     * @return
+     */
+    public String changeShortDelay(int delay) {
+        return new StringBuilder()
+                .append(Constants.commands.CHANGE_SHORT_DELAY)
+                .append(String.format("%05d", delay)).toString();
+    }
+    /**
+     *
+     * @param interval
+     * @return
+     */
+    public String changeFeedInterval(int interval) {
+        String output = null;
+        if(interval>=minInterval && interval<=maxInterval) {
+            output = new StringBuilder()
+                    .append(Constants.commands.FEED_INTERVAL)
+                    .append(String.format("%05d", interval * 60)).toString();
+        }
+        return output;
+    }
+
+    /**
+     *
+     * @param times
+     * @return
+     */
+    public String changeFeedTimes(int times) {
+        String output = null;
+        if(times>=minFeedTimes && times<=maxFeedTimes) {
+            output = new StringBuilder()
+                    .append(Constants.commands.FEED_TIMES)
+                    .append(times).toString();
+        }
+        return output;
+    }
+
+    /**
+     *
+     * @param threshold
+     * @return
+     */
+    public String changeNightThreshold(int threshold) {
+        String output = null;
+        if(threshold>=minNightThreshold && threshold<=maxNightThreshold) {
+            output = new StringBuilder()
+                    .append(Constants.commands.CHANGE_LIGHT_THRESHOLD)
+                    .append(threshold).toString();
+        }
+        return output;
+    }
+
+    /**
+     *
+     * @param pin
+     * @return
+     */
+    public String changeLightSensorPin(int pin) {
+        return new StringBuilder()
+                .append(Constants.commands.CHANGE_LIGHT_SENSOR_PIN)
+                .append(pin).toString();
+    }
+
+    /**
+     *
+     * @param allowFeedAtNight
+     */
+    public String changeFeedAtNightFlag(boolean allowFeedAtNight) {
+        String output = null;
+        if(allowFeedAtNight) {
+            output = new StringBuilder(Constants.commands.FEED_AT_NIGHT).append("1").toString();
+        } else {
+            output = new StringBuilder(Constants.commands.FEED_AT_NIGHT).append("0").toString();
+        }
+        return output;
+    }
+
+    /**
+     *
+     * @return
+     */
     public Feeder getFeeder() {
         return feeder;
     }
@@ -121,4 +297,6 @@ public class FeederManager {
     public void setListener(FeederListener listener) {
         this.listener = listener;
     }
+
+
 }

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">YAFF</string>
-    <string name="action_settings">Servo settings</string>
+    <string name="action_settings">Advanced settings</string>
     <string name="choose_a_device">Choose a device:</string>
     <string name="please_select">Please select</string>
     <string name="interval">Interval (min)</string>
@@ -11,14 +11,14 @@
     <string name="waiting_bluetooth">Connecting to feeder ...</string>
     <string name="feeding">Feeding ...</string>
     <string name="starting">Starting ...</string>
-    <string name="next_feeding_in">Next feeding in</string>
+    <string name="next_feeding_in">Next feeding</string>
     <string name="in_seconds">%d seconds</string>
     <string name="update_data">Update</string>
     <string name="reset">Reset</string>
     <string name="upload_data">upload</string>
     <string name="upload">up</string>
     <string name="in_minutes">%d minutes</string>
-    <string name="title_activity_servo_settings">Servo settings</string>
+    <string name="title_activity_servo_settings">Advanced settings</string>
     <string name="feeder_not_connected">Feeder is not connected</string>
     <string name="start_position">Start position is %d degrees</string>
     <string name="mid_position">Mid position is %d degrees</string>
@@ -38,4 +38,9 @@
     <string name="click_to_try_again">Click here to try again</string>
     <string name="feed_at_night">Allow feeding at night</string>
     <string name="firmware_version">Firmware v%d</string>
+    <string name="waiting_for_light">when light is back</string>
+    <string name="servo_settings">Servo</string>
+    <string name="light_sensor_settings">Light sensor</string>
+    <string name="night_threshold">Night threshold is %d</string>
+    <string name="light_sensor_pin">Light sensor pin is %d</string>
 </resources>
