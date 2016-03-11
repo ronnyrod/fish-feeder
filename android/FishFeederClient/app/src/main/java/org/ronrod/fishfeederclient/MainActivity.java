@@ -52,6 +52,7 @@ public class MainActivity extends BluetoothConnectionActivity implements
     TextView tvTimes;
     Switch swFeedAtNight;
     TextView tvFirmwareVersion;
+    TextView tvFeedAtNight;
 
     private FeederManager feederManager;
 
@@ -71,6 +72,7 @@ public class MainActivity extends BluetoothConnectionActivity implements
             }
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,6 +240,7 @@ public class MainActivity extends BluetoothConnectionActivity implements
         tvTimes = (TextView)findViewById(R.id.tv_feed_times);
         swFeedAtNight = (Switch)findViewById(R.id.sw_feed_at_night);
         tvFirmwareVersion = (TextView)findViewById(R.id.tv_firmware_version);
+        tvFeedAtNight = (TextView)findViewById(R.id.tv_feed_at_night);
     }
 
     @Override
@@ -350,6 +353,7 @@ public class MainActivity extends BluetoothConnectionActivity implements
             donutProgress.setInnerBottomText(String.format(getString(R.string.in_seconds), nextFeedingSeconds));
         }
 
+        tvFeedAtNight.setText(String.format(getString(R.string.feed_at_night),feederManager.getFeeder().getLastLightValue()));
         sbInterval.setProgress((feederManager.getFeeder().getInterval() - getResources().getInteger(R.integer.min_interval) * 60) / 60);
         onProgressChanged(sbInterval, sbInterval.getProgress(), false);
         sbTimes.setProgress(feederManager.getFeeder().getTimes() - getResources().getInteger(R.integer.min_times));

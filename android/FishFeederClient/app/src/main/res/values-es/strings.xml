@@ -37,7 +37,7 @@
     <string name="uploading_servo_vars">Subiendo configuración</string>
     <string name="waiting_bluetooth">Conectando ...</string>
     <string name="warning">Aviso</string>
-    <string name="feed_at_night">Alimentación nocturna</string>
+    <string name="feed_at_night">Alimentación nocturna (nivel = %d)</string>
     <string name="unknown"></string>
     <string name="waiting_for_light">cuando haya luz</string>
     <string name="servo_settings">Servo</string>

@@ -36,7 +36,7 @@
     <string name="cancel">Cancel</string>
     <string name="connection_not_availble">Connection not available</string>
     <string name="click_to_try_again">Click here to try again</string>
-    <string name="feed_at_night">Allow feeding at night</string>
+    <string name="feed_at_night">Allow feeding at night (level = %d)</string>
     <string name="firmware_version">Firmware v%d</string>
     <string name="waiting_for_light">when light is back</string>
     <string name="servo_settings">Servo</string>
