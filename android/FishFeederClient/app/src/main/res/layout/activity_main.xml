@@ -180,8 +180,8 @@
 
         <org.ronrod.fishfeederclient.ui.DonutProgress
             android:id="@+id/dp_feeding_cycle"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="@dimen/donut_width"
+            android:layout_height="@dimen/donut_height"
             custom:donut_unfinished_stroke_width="5dp"
             custom:donut_finished_stroke_width="10dp"
             custom:donut_progress="70"
