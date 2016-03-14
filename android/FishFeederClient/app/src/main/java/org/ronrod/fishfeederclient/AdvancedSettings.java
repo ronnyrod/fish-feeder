@@ -102,35 +102,35 @@ public class AdvancedSettings extends ActionBarActivity  implements  SeekBar.OnS
         int id = seekBar.getId();
         switch (id) {
             case R.id.sb_night_threshold:
-                int value = getResources().getInteger(R.integer.min_night_threshold)+progress;
+                int value = progress-getResources().getInteger(R.integer.min_night_threshold);
                 tvNightThreshold.setText(String.format(getString(R.string.night_threshold),value));
                 break;
             case R.id.sb_light_sensor_pin:
-                value = getResources().getInteger(R.integer.min_light_sensor_pin)+progress;
+                value = progress-getResources().getInteger(R.integer.min_light_sensor_pin);
                 tvLightSensorPin.setText(String.format(getString(R.string.light_sensor_pin),value));
                 break;
             case R.id.sb_start_postition:
-                value = getResources().getInteger(R.integer.min_position)+progress;
+                value = progress-getResources().getInteger(R.integer.min_position);
                 tvStartPos.setText(String.format(getString(R.string.start_position),value));
                 break;
             case R.id.sb_mid_postition:
-                value = getResources().getInteger(R.integer.min_position)+progress;
+                value = progress-getResources().getInteger(R.integer.min_position);
                 tvMidPos.setText(String.format(getString(R.string.mid_position),value));
                 break;
             case R.id.sb_end_postition:
-                value = getResources().getInteger(R.integer.min_position)+progress;
+                value = progress-getResources().getInteger(R.integer.min_position);
                 tvEndPos.setText(String.format(getString(R.string.end_position),value));
                 break;
             case R.id.sb_long_delay:
-                value = getResources().getInteger(R.integer.min_long_delay)+progress;
+                value = progress-getResources().getInteger(R.integer.min_long_delay);
                 tvLongDelay.setText(String.format(getString(R.string.long_delay),value));
                 break;
             case R.id.sb_short_delay:
-                value = getResources().getInteger(R.integer.min_short_delay)+progress;
+                value = progress-getResources().getInteger(R.integer.min_short_delay);
                 tvShortDelay.setText(String.format(getString(R.string.short_delay),value));
                 break;
             case R.id.sb_servo_pin:
-                value = getResources().getInteger(R.integer.min_servo_pin)+progress;
+                value = progress-getResources().getInteger(R.integer.min_servo_pin);
                 tvServoPin.setText(String.format(getString(R.string.servo_pin),value));
                 break;
         }
