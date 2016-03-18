@@ -70,7 +70,7 @@ public class MainActivity extends BluetoothConnectionActivity implements
                     dProgress = 0;
                 }
                 donutProgress.setProgress(dProgress);
-                mConnectingHandler.postDelayed(this,250);
+                mConnectingHandler.postDelayed(this,150);
             }
         }
     };
