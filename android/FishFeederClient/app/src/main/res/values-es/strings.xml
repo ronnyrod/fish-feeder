@@ -18,7 +18,7 @@
     <string name="in_minutes">%d minutos</string>
     <string name="in_seconds">%d segundos</string>
     <string name="interval">Intevalo (min)</string>
-    <string name="long_delay">Retardo largo %dmin</string>
+    <string name="long_delay">Retardo largo %dms</string>
     <string name="mid_position">Posición media %d grados</string>
     <string name="next_feeding_in">Próximo ciclo</string>
     <string name="please_select">Por favor selecciona</string>

@@ -54,6 +54,8 @@ public class MainActivity extends BluetoothConnectionActivity implements
     TextView tvFirmwareVersion;
     TextView tvFeedAtNight;
 
+    int stepInterval;
+
     private FeederManager feederManager;
 
     private Handler mConnectingHandler;
@@ -233,6 +235,7 @@ public class MainActivity extends BluetoothConnectionActivity implements
         btFeedAtNight.setOnClickListener(this);
 
         sbInterval = (SeekBar)findViewById(R.id.sb_interval);
+        stepInterval = getResources().getInteger(R.integer.interval_increment);
         sbInterval.setOnSeekBarChangeListener(this);
         tvInterval = (TextView)findViewById(R.id.tv_feed_interval);
         sbTimes = (SeekBar)findViewById(R.id.sb_times);
@@ -296,11 +299,12 @@ public class MainActivity extends BluetoothConnectionActivity implements
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         int id = seekBar.getId();
         if(id == R.id.sb_interval) {
-            int interval = getResources().getInteger(R.integer.min_interval)+progress;
+            int interval = getResources().getInteger(R.integer.min_interval)+Math.round(progress / stepInterval)*stepInterval;
             if(interval != feederManager.getFeeder().getInterval()) {
                 btChangeInterval.setEnabled(true);
             }
             tvInterval.setText(String.format(getString(R.string.feed_each_x_minutes), interval));
+            seekBar.setProgress(interval-getResources().getInteger(R.integer.min_interval));
         } else if(id == R.id.sb_times) {
             int times = getResources().getInteger(R.integer.min_times)+progress;
             if(times != feederManager.getFeeder().getTimes()) {

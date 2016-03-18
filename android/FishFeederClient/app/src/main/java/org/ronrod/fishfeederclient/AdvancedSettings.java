@@ -61,36 +61,19 @@ public class AdvancedSettings extends ActionBarActivity  implements  SeekBar.OnS
 
         btUploadSettings = (Button)findViewById(R.id.bt_save_servo_settings);
 
-        sbNightThreshold.setOnSeekBarChangeListener(this);
-        sbLightSensorPin.setOnSeekBarChangeListener(this);
-        sbStartPos.setOnSeekBarChangeListener(this);
-        sbMidPos.setOnSeekBarChangeListener(this);
-        sbEndPos.setOnSeekBarChangeListener(this);
-        sbLongDelay.setOnSeekBarChangeListener(this);
-        sbShortDelay.setOnSeekBarChangeListener(this);
-        sbServoPin.setOnSeekBarChangeListener(this);
-
         btUploadSettings.setOnClickListener(this);
         btUploadSettings.setEnabled(false);
 
-        //Initial values
-        sbNightThreshold.setProgress(getIntent().getIntExtra(Constants.keys.NIGHT_THRESHOLD, 0));
-        onProgressChanged(sbNightThreshold, sbNightThreshold.getProgress(), false);
-        sbLightSensorPin.setProgress(getIntent().getIntExtra(Constants.keys.LIGHT_SENSOR_PIN, 0));
-        onProgressChanged(sbLightSensorPin, sbLightSensorPin.getProgress(), false);
+        //Initial values and listeners
+        setupSeekBarValueFromIntent(sbNightThreshold, Constants.keys.NIGHT_THRESHOLD, R.integer.min_night_threshold);
+        setupSeekBarValueFromIntent(sbLightSensorPin, Constants.keys.LIGHT_SENSOR_PIN, R.integer.min_light_sensor_pin);
+        setupSeekBarValueFromIntent(sbStartPos, Constants.keys.STARTING_POS, R.integer.min_position);
+        setupSeekBarValueFromIntent(sbMidPos, Constants.keys.MID_POSITION, R.integer.min_position);
+        setupSeekBarValueFromIntent(sbEndPos, Constants.keys.END_POSITION, R.integer.min_position);
+        setupSeekBarValueFromIntent(sbLongDelay, Constants.keys.LONG_DELAY, R.integer.min_long_delay);
+        setupSeekBarValueFromIntent(sbShortDelay, Constants.keys.SHORT_DELAY, R.integer.min_short_delay);
+        setupSeekBarValueFromIntent(sbServoPin, Constants.keys.SERVO_PIN, R.integer.min_servo_pin);
 
-        sbStartPos.setProgress(getIntent().getIntExtra(Constants.keys.STARTING_POS, 0));
-        onProgressChanged(sbStartPos, sbStartPos.getProgress(), false);
-        sbMidPos.setProgress(getIntent().getIntExtra(Constants.keys.MID_POSITION, 0));
-        onProgressChanged(sbMidPos, sbMidPos.getProgress(), false);
-        sbEndPos.setProgress(getIntent().getIntExtra(Constants.keys.END_POSITION, 0));
-        onProgressChanged(sbEndPos, sbEndPos.getProgress(), false);
-        sbLongDelay.setProgress(getIntent().getIntExtra(Constants.keys.LONG_DELAY, 0));
-        onProgressChanged(sbLongDelay, sbLongDelay.getProgress(), false);
-        sbShortDelay.setProgress(getIntent().getIntExtra(Constants.keys.SHORT_DELAY, 0));
-        onProgressChanged(sbShortDelay, sbShortDelay.getProgress(), false);
-        sbServoPin.setProgress(getIntent().getIntExtra(Constants.keys.SERVO_PIN, 0));
-        onProgressChanged(sbServoPin, sbServoPin.getProgress(), false);
 
         //Default value
         setResult(RESULT_CANCELED);
@@ -102,35 +85,35 @@ public class AdvancedSettings extends ActionBarActivity  implements  SeekBar.OnS
         int id = seekBar.getId();
         switch (id) {
             case R.id.sb_night_threshold:
-                int value = progress-getResources().getInteger(R.integer.min_night_threshold);
+                int value = progress+getResources().getInteger(R.integer.min_night_threshold);
                 tvNightThreshold.setText(String.format(getString(R.string.night_threshold),value));
                 break;
             case R.id.sb_light_sensor_pin:
-                value = progress-getResources().getInteger(R.integer.min_light_sensor_pin);
+                value = progress+getResources().getInteger(R.integer.min_light_sensor_pin);
                 tvLightSensorPin.setText(String.format(getString(R.string.light_sensor_pin),value));
                 break;
             case R.id.sb_start_postition:
-                value = progress-getResources().getInteger(R.integer.min_position);
+                value = progress+getResources().getInteger(R.integer.min_position);
                 tvStartPos.setText(String.format(getString(R.string.start_position),value));
                 break;
             case R.id.sb_mid_postition:
-                value = progress-getResources().getInteger(R.integer.min_position);
+                value = progress+getResources().getInteger(R.integer.min_position);
                 tvMidPos.setText(String.format(getString(R.string.mid_position),value));
                 break;
             case R.id.sb_end_postition:
-                value = progress-getResources().getInteger(R.integer.min_position);
+                value = progress+getResources().getInteger(R.integer.min_position);
                 tvEndPos.setText(String.format(getString(R.string.end_position),value));
                 break;
             case R.id.sb_long_delay:
-                value = progress-getResources().getInteger(R.integer.min_long_delay);
+                value = progress+getResources().getInteger(R.integer.min_long_delay);
                 tvLongDelay.setText(String.format(getString(R.string.long_delay),value));
                 break;
             case R.id.sb_short_delay:
-                value = progress-getResources().getInteger(R.integer.min_short_delay);
+                value = progress+getResources().getInteger(R.integer.min_short_delay);
                 tvShortDelay.setText(String.format(getString(R.string.short_delay),value));
                 break;
             case R.id.sb_servo_pin:
-                value = progress-getResources().getInteger(R.integer.min_servo_pin);
+                value = progress+getResources().getInteger(R.integer.min_servo_pin);
                 tvServoPin.setText(String.format(getString(R.string.servo_pin),value));
                 break;
         }
@@ -152,16 +135,40 @@ public class AdvancedSettings extends ActionBarActivity  implements  SeekBar.OnS
         int id = v.getId();
         if(id == R.id.bt_save_servo_settings) {
             Intent intent = new Intent();
-            intent.putExtra(Constants.keys.NIGHT_THRESHOLD,sbNightThreshold.getProgress());
-            intent.putExtra(Constants.keys.LIGHT_SENSOR_PIN,sbLightSensorPin.getProgress());
-            intent.putExtra(Constants.keys.STARTING_POS,sbStartPos.getProgress());
-            intent.putExtra(Constants.keys.MID_POSITION,sbMidPos.getProgress());
-            intent.putExtra(Constants.keys.END_POSITION,sbEndPos.getProgress());
-            intent.putExtra(Constants.keys.LONG_DELAY,sbLongDelay.getProgress());
-            intent.putExtra(Constants.keys.SHORT_DELAY, sbShortDelay.getProgress());
-            intent.putExtra(Constants.keys.SERVO_PIN, sbServoPin.getProgress());
+            addValueToIntent(intent,sbNightThreshold, Constants.keys.NIGHT_THRESHOLD, R.integer.min_night_threshold);
+            addValueToIntent(intent,sbLightSensorPin, Constants.keys.LIGHT_SENSOR_PIN, R.integer.min_light_sensor_pin);
+            addValueToIntent(intent,sbStartPos, Constants.keys.STARTING_POS, R.integer.min_position);
+            addValueToIntent(intent,sbMidPos, Constants.keys.MID_POSITION, R.integer.min_position);
+            addValueToIntent(intent,sbEndPos, Constants.keys.END_POSITION, R.integer.min_position);
+            addValueToIntent(intent,sbLongDelay, Constants.keys.LONG_DELAY, R.integer.min_long_delay);
+            addValueToIntent(intent,sbShortDelay, Constants.keys.SHORT_DELAY, R.integer.min_short_delay);
+            addValueToIntent(intent,sbServoPin, Constants.keys.SERVO_PIN, R.integer.min_servo_pin);
             setResult(RESULT_OK,intent);
             finish();
         }
     }
+
+    /**
+     *
+     * @param seekBar
+     * @param intentKey
+     * @param minDimenId
+     */
+    private void setupSeekBarValueFromIntent(final SeekBar seekBar, String intentKey, int minDimenId) {
+        seekBar.setProgress(getIntent().getIntExtra(intentKey,0)-getResources().getInteger(minDimenId));
+        onProgressChanged(seekBar, seekBar.getProgress(), false);
+        seekBar.setOnSeekBarChangeListener(this);
+    }
+
+    /**
+     *
+     * @param intent
+     * @param seekBar
+     * @param intentKey
+     * @param minDimenId
+     */
+    private void addValueToIntent(final Intent intent, final SeekBar seekBar, String intentKey, int minDimenId) {
+        intent.putExtra(intentKey,seekBar.getProgress()+getResources().getInteger(minDimenId));
+    }
+
 }
