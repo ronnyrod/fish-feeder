@@ -1,4 +1,4 @@
-package org.ronrod.fishfeederclient;
+package org.ronrod.fishfeederclient.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,12 +14,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.ronrod.fishfeederclient.bluetooth.BluetoothDeviceHandler;
+import org.ronrod.fishfeederclient.R;
 import org.ronrod.fishfeederclient.model.Constants;
 import org.ronrod.fishfeederclient.model.Feeder;
 import org.ronrod.fishfeederclient.model.FeederListener;
 import org.ronrod.fishfeederclient.model.FeederManager;
-import org.ronrod.fishfeederclient.ui.DonutProgress;
 
 public class MainActivity extends BluetoothConnectionActivity implements
         View.OnClickListener,
@@ -249,8 +248,8 @@ public class MainActivity extends BluetoothConnectionActivity implements
     @Override
     public void onError(int code) {
 
-        if(code == BluetoothDeviceHandler.INITIAL_CONNECTION_FAILED
-                ||code == BluetoothDeviceHandler.READING_WRITING_FAILURE) {
+        if(code == INITIAL_CONNECTION_FAILED
+                ||code == READING_WRITING_FAILURE) {
             isConnected = false;
             donutProgress.setProgress(0);
             donutProgress.setText(getString(R.string.connection_not_availble));

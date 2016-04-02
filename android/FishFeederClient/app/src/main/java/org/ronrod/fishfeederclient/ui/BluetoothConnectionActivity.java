@@ -1,4 +1,4 @@
-package org.ronrod.fishfeederclient;
+package org.ronrod.fishfeederclient.ui;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 
+import org.ronrod.fishfeederclient.R;
 import org.ronrod.fishfeederclient.bluetooth.BluetoothConnectionManager;
 import org.ronrod.fishfeederclient.bluetooth.BluetoothDeviceHandler;
 import org.ronrod.fishfeederclient.model.Constants;

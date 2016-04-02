@@ -1,4 +1,4 @@
-package org.ronrod.fishfeederclient;
+package org.ronrod.fishfeederclient.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import org.ronrod.fishfeederclient.R;
 import org.ronrod.fishfeederclient.model.Constants;
 
 public class AdvancedSettings extends ActionBarActivity  implements  SeekBar.OnSeekBarChangeListener, View.OnClickListener{
