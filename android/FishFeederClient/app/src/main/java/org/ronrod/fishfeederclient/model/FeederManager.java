@@ -60,7 +60,7 @@ public class FeederManager {
                             int feedTimes = Integer.parseInt(var.replace(Constants.responses.FEED_TIMES, ""));
                             feeder.setTimes(feedTimes);
                         } else if (var.startsWith(Constants.responses.LAST_FEED_TIME)) {
-                            int lastFeedTime = Integer.parseInt(var.replace(Constants.responses.LAST_FEED_TIME, ""));
+                            long lastFeedTime = Long.parseLong(var.replace(Constants.responses.LAST_FEED_TIME, ""));
                             feeder.setLastFeedTime(lastFeedTime);
                         }else if (var.startsWith(Constants.responses.NEXT_FEEDING)) {
                             int nextFeeding = Integer.parseInt(var.replace(Constants.responses.NEXT_FEEDING, ""));

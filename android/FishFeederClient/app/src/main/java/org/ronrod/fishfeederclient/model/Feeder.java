@@ -9,7 +9,7 @@ public class Feeder {
     private boolean feedAtNight;
     private int lastLightValue;
     private int times;
-    private int lastFeedTime;
+    private long lastFeedTime;
     private int nextFeeding;
     private int version;
     private ServoVars servoVars;
@@ -60,11 +60,11 @@ public class Feeder {
         this.times = times;
     }
 
-    public int getLastFeedTime() {
+    public long getLastFeedTime() {
         return lastFeedTime;
     }
 
-    public void setLastFeedTime(int lastFeedTime) {
+    public void setLastFeedTime(long lastFeedTime) {
         this.lastFeedTime = lastFeedTime;
     }
 
