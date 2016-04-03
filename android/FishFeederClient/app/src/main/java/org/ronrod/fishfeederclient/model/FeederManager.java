@@ -147,7 +147,9 @@ public class FeederManager {
     public String status() {
         return Constants.commands.STATUS;
     }
-
+    public String switchStatusLigth() {
+        return Constants.commands.SWITCH_STATUS_LIGHT;
+    }
     /**
      *
      * @param pin
@@ -295,6 +297,7 @@ public class FeederManager {
     public void setListener(FeederListener listener) {
         this.listener = listener;
     }
+
 
 
 }

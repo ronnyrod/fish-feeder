@@ -36,6 +36,7 @@ public final class Constants {
         public static final String CHANGE_LONG_DELAY = "CLDLY";
         public static final String CHANGE_SHORT_DELAY = "CSDLY";
         public static final String VERSION    = "VE";
+        public static final String SWITCH_STATUS_LIGHT = "SS";
     }
     public static final class responses {
         public static final String VERSION = "VE";

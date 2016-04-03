@@ -43,4 +43,5 @@
     <string name="light_sensor_settings">Light sensor</string>
     <string name="night_threshold">Night threshold is %d</string>
     <string name="light_sensor_pin">Light sensor pin is %d</string>
+    <string name="action_switch_status_light">Switch status light</string>
 </resources>

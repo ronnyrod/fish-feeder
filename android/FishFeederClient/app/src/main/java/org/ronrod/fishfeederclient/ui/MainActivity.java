@@ -140,14 +140,14 @@ public class MainActivity extends BluetoothConnectionActivity implements
                 onMenuReset();
             } else if (id == R.id.action_save) {
                 onSaveData();
+            } else if(id == R.id.action_switch_status_light) {
+                onSwitchStatusLight();
             }
         } else {
             Toast.makeText(this,getString(R.string.feeder_not_connected),Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -211,6 +211,12 @@ public class MainActivity extends BluetoothConnectionActivity implements
         send(feederManager.status());
     }
 
+    /**
+     *
+     */
+    private void onSwitchStatusLight() {
+        send(feederManager.switchStatusLigth());
+    }
     /**
      *
      */

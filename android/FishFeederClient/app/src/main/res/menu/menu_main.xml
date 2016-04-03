@@ -8,13 +8,18 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_save"
+        android:id="@+id/action_switch_status_light"
         android:orderInCategory="101"
+        android:title="@string/action_switch_status_light"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_save"
+        android:orderInCategory="102"
         android:title="@string/save_data"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_reset"
-        android:orderInCategory="102"
+        android:orderInCategory="103"
         android:title="@string/action_reset"
         app:showAsAction="never" />
 

@@ -79,6 +79,7 @@ String FEED_ON_NIGHT = "FN";
 String STATUS = "ST";
 String SAVE_DATA = "SD";
 String RESET_DATA = "RD";
+String SWITCH_STATUS_LIGHT="SS";
 String CHANGE_SERVO_PIN = "CSPIN";
 String CHANGE_LIGHT_SENSOR_PIN = "CLSPIN";
 String CHANGE_LIGHT_THRESHOLD = "CLTHR";
@@ -131,13 +132,9 @@ void loop()
 {  
   if(status == STATUS_STARTING) {
     startFeedingCycle();
-  } else if (status == STATUS_FEEDING) {
-    //Status LED ON
-    digitalWrite(STATUS_LED_PIN,HIGH);     
+  } else if (status == STATUS_FEEDING) {     
     status = feedCycle();    
-  } else {
-    //Normal state - Status LED OFF
-    digitalWrite(STATUS_LED_PIN,LOW);       
+  } else {       
     if (cmdReceived) {    
       processCommand();
       inputString = "";
@@ -175,6 +172,8 @@ int feedCycle() {
             feedCycleState = FC_STARTING;
           } else {            
             output = STATUS_NORMAL;
+            //Normal state - Status LED OFF
+            digitalWrite(STATUS_LED_PIN,LOW);
           }          
         } else if(feedCyclePosition<=midPosition) {
           feedCyclePosition = startPosition;
@@ -208,6 +207,8 @@ void startFeedingCycle() {
   feedCycleDelay = 0;  
   feedCycleMaxDuration = feedTimes*(longDelay+longDelay+shortDelay * (endPosition - midPosition));  
   status = STATUS_FEEDING;
+  //Status LED ON
+  digitalWrite(STATUS_LED_PIN,HIGH);
   sendStatus(false);
 }
 /*
@@ -259,6 +260,12 @@ void processCommand() {
     } else if (inputString.startsWith(CHANGE_SHORT_DELAY) && inputString.length() >= CHANGE_SHORT_DELAY.length() + 5) {
       inputString.replace(CHANGE_SHORT_DELAY,"");
       shortDelay = inputString.toInt();
+    } else if (inputString.startsWith(SWITCH_STATUS_LIGHT)) {      
+      if(digitalRead(STATUS_LED_PIN) == HIGH) {
+          digitalWrite(STATUS_LED_PIN,LOW);  
+      } else {
+          digitalWrite(STATUS_LED_PIN,HIGH);
+      }
     } else {
       //Return help
       help();
@@ -338,6 +345,8 @@ void help() {
   Serial.println(" Reset feeder to default values and delete EEPROM");
   Serial.print(STATUS);
   Serial.println(" Show feeder status (status,feed interval,feed times, last feed time, servo vars)");
+  Serial.print(SWITCH_STATUS_LIGHT);
+  Serial.println(" Turn on/off status light");  
   Serial.print(CHANGE_LIGHT_SENSOR_PIN);
   Serial.println("X Change light sensor pin");
   Serial.print(CHANGE_LIGHT_THRESHOLD);

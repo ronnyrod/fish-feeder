@@ -44,4 +44,5 @@
     <string name="light_sensor_settings">Sensor de luz</string>
     <string name="light_sensor_pin">Pin del sensor de luz es %d</string>
     <string name="night_threshold">Límite noche es %d</string>
+    <string name="action_switch_status_light">Apaga/enciende luz de estado</string>
 </resources>
