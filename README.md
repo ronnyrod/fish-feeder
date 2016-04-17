@@ -7,6 +7,7 @@
 > - Arduino board (This firmware was tested on UNO board)
 > - Servo motor (for example, SG90)
 > - Light sensor
+> - Led + 330 Ohm (optional)
 > - 10k resistor
 > - Small container (Just for fish food)
 > - Hot glue
