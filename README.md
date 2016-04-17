@@ -24,6 +24,7 @@ You can send some commands to the feeder to get/set some operational parameters 
 |    SD   |                                 N/A                                 | Save all parameters into EEPROM                                                    |
 |    RD   |                                 N/A                                 | Reset the feeder to default values and delete EEPROM                                   |
 |    ST   |                                 N/A                                 | Show the feeder status  (status, version, feed interval,feed times, last feed time, servo vars, light sensor vars) |
+|    SS    |                                N/A                                 | Turn on/off status light                 
 |  CLSPIN  |            X: analog pin for light sensor (default 2)              | Change light sensor pin                                                                   |
 |  CLTHR  |          XXXX: light sensor threshold (default 1023)                | Change light sensor threshold                                                                   |
 |  CSPIN  |            X: pin attached to servo (default 9)                     | Change servo pin                                                                   |
