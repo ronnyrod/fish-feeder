@@ -12,6 +12,10 @@
 > - Small container (Just for fish food)
 > - Hot glue
 
+## Schematic ##
+
+![alt tag](Schematic_esquema.png)
+
 ## Serial commands ##
 
 You can send some commands to the feeder to get/set some operational parameters or variables
