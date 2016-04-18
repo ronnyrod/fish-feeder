@@ -6,6 +6,7 @@
 #define STATUS_LED_PIN  13
 #define FEEDER_SERVO_PIN  9
 #define LIGHT_SENSOR_PIN  2
+#define MANUAL_FEED_PIN	12
 
 #define START_POSITION  0
 #define MID_POSITION  70
@@ -102,6 +103,9 @@ void setup()
   //Status led
   pinMode(STATUS_LED_PIN, OUTPUT);
 
+  //Force feeding cycle button
+  pinMode(MANUAL_FEED_PIN, INPUT);
+
   if(isDataStored()) {
     //Load variables from eeprom
     loadDataFromEEPROM();
@@ -134,6 +138,8 @@ void loop()
     startFeedingCycle();
   } else if (status == STATUS_FEEDING) {     
     status = feedCycle();    
+  } else if (digitalRead(MANUAL_FEED_PIN) == LOW) {
+    startFeedingCycle();
   } else {       
     if (cmdReceived) {    
       processCommand();
